@@ -30,7 +30,6 @@ exports.handler = async (event, context) => {
     });
 
     const data = await response.json();
-
     console.log("FULL RAW RESPONSE:", JSON.stringify(data, null, 2));
 
     if (!response.ok) {
@@ -41,15 +40,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const finalText = (data?.content || [])
-      .filter(part => part.type === "text" && part.text)
-      .map(part => part.text)
-      .join(" ");
+    // ✅ DIRECTLY GET THE TEXT FROM FIRST CONTENT BLOCK
+    const finalText = data?.content?.[0]?.text || "No text returned";
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: finalText || JSON.stringify(data)
+        reply: finalText
       })
     };
 
