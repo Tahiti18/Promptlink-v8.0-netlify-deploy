@@ -1,68 +1,43 @@
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
-exports.handler = async (event) => {
-  console.log("🚀 Starting OpenAI function...");
-  console.log("🔑 OPENAI KEY:", process.env.OPENAI_API_KEY);
-
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json'
-  };
-
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
-  }
-
+exports.handler = async (event, context) => {
   try {
-    const body = JSON.parse(event.body);
-    const userPrompt = body.message || "Say hello from OpenAI.";
+    const { message } = JSON.parse(event.body || '{}');
 
-    if (!process.env.OPENAI_API_KEY) {
-      console.log("🚨 OPENAI_API_KEY is undefined! Check Netlify env settings.");
-    }
-
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "gpt-3.5-turbo",
         messages: [
-          { role: "user", content: userPrompt }
+          { role: "user", content: message || "Say something intelligent." }
         ]
       })
     });
 
-    const rawText = await openaiResponse.text();
-    console.log("📝 Raw response from OpenAI:", rawText);
+    const data = await response.json();
 
-    if (!openaiResponse.ok) {
+    if (!response.ok) {
       return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: rawText })
+        statusCode: response.status,
+        body: JSON.stringify({ error: data })
       };
     }
 
-    const data = JSON.parse(rawText);
-    const reply = data.choices?.[0]?.message?.content || "No response text.";
-
     return {
       statusCode: 200,
-      headers,
-      body: JSON.stringify({ message: reply })
+      body: JSON.stringify({
+        reply: data.choices[0].message.content
+      })
     };
 
-  } catch (error) {
-    console.log("🔥 Caught error:", error);
+  } catch (err) {
     return {
       statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: err.toString() })
     };
   }
 };
