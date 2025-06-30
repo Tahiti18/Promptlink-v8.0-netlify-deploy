@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4.1",
         messages: [
           { role: "user", content: message }
         ]
@@ -35,15 +35,13 @@ exports.handler = async (event, context) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        reply: data.choices[0].message.content
-      })
+      body: JSON.stringify({ reply: data.choices[0].message.content })
     };
 
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.toString() })
+      body: JSON.stringify({ error: error.message })
     };
   }
 };
