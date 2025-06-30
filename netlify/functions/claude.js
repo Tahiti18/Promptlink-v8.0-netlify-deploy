@@ -39,12 +39,18 @@ exports.handler = async (event, context) => {
       };
     }
 
+    const finalText = (data?.content || [])
+      .filter(part => part.type === "text" && part.text)
+      .map(part => part.text)
+      .join(" ");
+
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: data?.content?.map(part => part.text).join(" ") || JSON.stringify(data)
+        reply: finalText || JSON.stringify(data)
       })
     };
+
   } catch (err) {
     console.error("Server Function Error:", err);
     return {
