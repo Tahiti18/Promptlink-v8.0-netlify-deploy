@@ -15,10 +15,10 @@ exports.handler = async (event, context) => {
       headers: {
         "x-api-key": process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-3-sonnet-20240229",    // ✅ FINAL CORRECT MODEL
+        model: "claude-3-sonnet-20240229",
         max_tokens: 1024,
         messages: [
           {
@@ -38,10 +38,13 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Anthropic's data may vary, so safer fallback
+    const replyText = data?.content?.[0]?.text || data?.content || JSON.stringify(data);
+
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: data?.content?.[0]?.text || data
+        reply: replyText
       })
     };
   } catch (err) {
