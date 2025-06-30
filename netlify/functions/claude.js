@@ -15,7 +15,7 @@ exports.handler = async (event, context) => {
       headers: {
         "x-api-key": process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
-        "Content-Type": "application/json"
+        "content-type": "application/json"
       },
       body: JSON.stringify({
         model: "claude-3-sonnet-20240229",
@@ -32,22 +32,21 @@ exports.handler = async (event, context) => {
     const data = await response.json();
 
     if (!response.ok) {
+      console.error("Claude API Error:", data);
       return {
         statusCode: response.status,
         body: JSON.stringify({ error: data })
       };
     }
 
-    // Anthropic's data may vary, so safer fallback
-    const replyText = data?.content?.[0]?.text || data?.content || JSON.stringify(data);
-
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: replyText
+        reply: data?.content?.[0]?.text || JSON.stringify(data)
       })
     };
   } catch (err) {
+    console.error("Server Function Error:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: err.toString() })
