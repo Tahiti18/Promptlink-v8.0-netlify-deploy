@@ -1,22 +1,16 @@
-import fetch from 'node-fetch';
+const fetch = require("node-fetch");
 
-exports.handler = async (event) => {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json'
-  };
-
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
-  }
-
+exports.handler = async (event, context) => {
   try {
-    const body = JSON.parse(event.body);
-    const userPrompt = body.message || "Say hello.";
+    let message = "Say something intelligent.";
+    if (event.body) {
+      const body = JSON.parse(event.body);
+      if (body.message) {
+        message = body.message;
+      }
+    }
 
-    const anthropicResponse = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "x-api-key": process.env.ANTHROPIC_API_KEY,
@@ -24,40 +18,38 @@ exports.handler = async (event) => {
         "content-type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-3-opus-20240229",
-        max_tokens: 600,
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1024,
         messages: [
           {
             role: "user",
-            content: `${userPrompt}`
+            content: message
           }
         ]
       })
     });
 
-    const data = await anthropicResponse.json();
+    const data = await response.json();
 
-    if (!anthropicResponse.ok) {
+    if (!response.ok) {
+      console.error("Claude API Error:", data);
       return {
-        statusCode: 500,
-        headers,
+        statusCode: response.status,
         body: JSON.stringify({ error: data })
       };
     }
 
-    const reply = data.content?.[0]?.text || "No response text.";
-
     return {
       statusCode: 200,
-      headers,
-      body: JSON.stringify({ message: reply })
+      body: JSON.stringify({
+        reply: data?.content?.[0]?.text || JSON.stringify(data)
+      })
     };
-
-  } catch (error) {
+  } catch (err) {
+    console.error("Server Function Error:", err);
     return {
       statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: err.toString() })
     };
   }
 };
