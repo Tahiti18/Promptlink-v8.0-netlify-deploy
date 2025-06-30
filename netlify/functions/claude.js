@@ -18,7 +18,7 @@ exports.handler = async (event, context) => {
         "content-type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4",    // ✅ THIS IS THE SWITCH
+        model: "claude-3-sonnet-20240229",    // ✅ CHANGED HERE
         max_tokens: 1024,
         messages: [
           {
