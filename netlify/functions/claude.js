@@ -1,3 +1,4 @@
+
 exports.handler = async (event) => {
   console.log("🚀 Starting Claude function...");
   console.log("🔑 ANTHROPIC KEY:", process.env.ANTHROPIC_API_KEY);
@@ -53,12 +54,11 @@ exports.handler = async (event) => {
     }
 
     const data = JSON.parse(rawText);
-    const reply = data.content?.[0]?.text || "No response text.";
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ message: reply })
+      body: JSON.stringify(data)
     };
 
   } catch (error) {
