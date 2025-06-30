@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 exports.handler = async (event) => {
   console.log("🚀 Starting Claude function...");
   console.log("🔑 ANTHROPIC KEY:", process.env.ANTHROPIC_API_KEY);
