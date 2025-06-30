@@ -31,8 +31,10 @@ exports.handler = async (event, context) => {
 
     const data = await response.json();
 
+    console.log("FULL RAW RESPONSE:", JSON.stringify(data, null, 2));
+
     if (!response.ok) {
-      console.error("Claude API Error:", data);
+      console.error("Claude RAW JSON:", JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         body: JSON.stringify({ error: data })
