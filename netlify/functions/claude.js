@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 exports.handler = async (event) => {
   console.log("🚀 Starting Claude function...");
   console.log("🔑 ANTHROPIC KEY:", process.env.ANTHROPIC_API_KEY);
@@ -43,22 +45,12 @@ exports.handler = async (event) => {
 
     const rawText = await anthropicResponse.text();
     console.log("📝 Raw response from Anthropic:", rawText);
-
-    if (!anthropicResponse.ok) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: rawText })
-      };
-    }
-
-    const data = JSON.parse(rawText);
-    const reply = data.content?.[0]?.text || "No response text.";
+    console.log("🚦 HTTP status:", anthropicResponse.status);
 
     return {
-      statusCode: 200,
+      statusCode: anthropicResponse.status,
       headers,
-      body: JSON.stringify({ message: reply })
+      body: rawText || "No response received"
     };
 
   } catch (error) {
