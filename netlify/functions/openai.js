@@ -2,7 +2,13 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   try {
-    const { message } = JSON.parse(event.body || '{}');
+    let message = "Say something intelligent.";
+    if (event.body) {
+      const body = JSON.parse(event.body);
+      if (body.message) {
+        message = body.message;
+      }
+    }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -13,7 +19,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [
-          { role: "user", content: message || "Say something intelligent." }
+          { role: "user", content: message }
         ]
       })
     });
