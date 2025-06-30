@@ -42,7 +42,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: data?.content?.[0]?.text || JSON.stringify(data)
+        reply: data?.content?.map(part => part.text).join(" ") || JSON.stringify(data)
       })
     };
   } catch (err) {
