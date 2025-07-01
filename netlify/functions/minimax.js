@@ -10,33 +10,32 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Using OpenRouter for MiniMax-M1 access
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    // AI4Chat MiniMax-01 FREE API Integration
+    const response = await fetch('https://app.ai4chat.co/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://thepromptlink.com',
-        'X-Title': 'ThePromptLink Multi-Agent Platform'
+        'Authorization': `Bearer ${process.env.AI4CHAT_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "minimax/minimax-m1",
+        model: 'MiniMax-01',
         messages: [
           {
-            role: "user", 
+            role: 'user',
             content: message
           }
         ],
-        max_tokens: 80000,
-        temperature: 0.7
+        temperature: 0.7,
+        language: 'English',
+        tone: 'Default'
       })
     });
 
     const data = await response.json();
-    console.log('MiniMax M1 Response:', JSON.stringify(data, null, 2));
+    console.log('AI4Chat MiniMax-01 Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
-      console.error('MiniMax API Error:', JSON.stringify(data, null, 2));
+      console.error('AI4Chat API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -48,10 +47,10 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ CORRECT OPENROUTER RESPONSE PARSING
+    // ✅ PARSE AI4CHAT RESPONSE FORMAT
     let finalText;
     if (data?.choices?.[0]?.message?.content) {
-      // Standard OpenRouter/OpenAI format
+      // Standard AI4Chat format (OpenAI-compatible)
       finalText = data.choices[0].message.content;
     } else {
       // Fallback with debug info
