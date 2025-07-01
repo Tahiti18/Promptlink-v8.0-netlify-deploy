@@ -21,17 +21,16 @@ exports.handler = async (event, context) => {
         messages: [
           { role: 'user', content: message }
         ],
-        max_tokens: 4000,  // Reduced from 80000
+        max_tokens: 4000,
         temperature: 0.7
       })
     });
 
-    // ✅ FIX THE JSON PARSING ISSUE
+    // ✅ FIXED JSON PARSING WITH ERROR HANDLING
     let data;
     try {
       data = await response.json();
     } catch (jsonError) {
-      // If JSON parsing fails, get the raw text response
       const textResponse = await response.text();
       console.log('Raw OpenRouter response (non-JSON):', textResponse);
       return {
@@ -62,12 +61,20 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ PARSE SUCCESSFUL RESPONSE
+    // ✅ FIXED RESPONSE PARSING - Handle both content AND reasoning fields
     let finalText;
-    if (data?.choices?.[0]?.message?.content) {
+    if (data?.choices?.[0]?.message?.content && data.choices[0].message.content.trim() !== "") {
+      // Standard content response
       finalText = data.choices[0].message.content;
+      console.log('SUCCESS: Using content field');
+    } else if (data?.choices?.[0]?.message?.reasoning) {
+      // Use reasoning field when content is empty
+      finalText = data.choices[0].message.reasoning;
+      console.log('SUCCESS: Using reasoning field');
     } else {
+      // Debug fallback
       finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
+      console.log('DEBUG: Unknown format detected');
     }
     
     // ✅ FORMAT TEXT WITH PROPER LINE BREAKS
