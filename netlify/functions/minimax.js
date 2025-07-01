@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'minimax/minimax-01',  // ✅ CHANGED TO MINIMAX-01
+        model: 'meta-llama/llama-3.3-70b-instruct',  // ✅ LLAMA TIME!
         messages: [
           { role: 'user', content: message }
         ],
@@ -46,10 +46,10 @@ exports.handler = async (event, context) => {
       };
     }
 
-    console.log('OpenRouter MiniMax-01 Response:', JSON.stringify(data, null, 2));
+    console.log('OpenRouter Llama Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok || data.error) {
-      console.error('OpenRouter MiniMax-01 API Error:', JSON.stringify(data, null, 2));
+      console.error('OpenRouter Llama API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -61,18 +61,12 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ FIXED RESPONSE PARSING - Handle both content AND reasoning fields
+    // ✅ STANDARD RESPONSE PARSING (Llama uses standard format)
     let finalText;
     if (data?.choices?.[0]?.message?.content && data.choices[0].message.content.trim() !== "") {
-      // Standard content response
       finalText = data.choices[0].message.content;
       console.log('SUCCESS: Using content field');
-    } else if (data?.choices?.[0]?.message?.reasoning) {
-      // Use reasoning field when content is empty
-      finalText = data.choices[0].message.reasoning;
-      console.log('SUCCESS: Using reasoning field');
     } else {
-      // Debug fallback
       finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
       console.log('DEBUG: Unknown format detected');
     }
@@ -100,7 +94,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('MiniMax-01 Function Error:', error);
+    console.error('Llama Function Error:', error);
     return {
       statusCode: 500,
       headers: {
