@@ -10,6 +10,7 @@ exports.handler = async (event, context) => {
       }
     }
 
+    // Using OpenRouter for MiniMax-M1 Extended (FREE) access
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -32,8 +33,10 @@ exports.handler = async (event, context) => {
     });
 
     const data = await response.json();
+    console.log('MiniMax M1 Extended Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
+      console.error('MiniMax API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -45,7 +48,23 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // 🔍 ULTRA-SIMPLE DEBUG - Just return the raw data as text
+    // ✅ CORRECT OPENROUTER RESPONSE PARSING
+    let finalText;
+    if (data?.choices?.[0]?.message?.content) {
+      // Standard OpenRouter/OpenAI format
+      finalText = data.choices[0].message.content;
+    } else {
+      // Fallback with debug info
+      finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
+    }
+    
+    // ✅ FORMAT TEXT WITH PROPER LINE BREAKS (matching Claude/ChatGPT)
+    finalText = finalText
+      .replace(/\n\n/g, '</p><p>')  // Double line breaks = new paragraphs
+      .replace(/\n/g, '<br>')       // Single line breaks = <br>
+      .replace(/^/, '<p>')          // Start with paragraph
+      .replace(/$/, '</p>');        // End with paragraph
+
     return {
       statusCode: 200,
       headers: {
@@ -56,12 +75,13 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         content: [{
           type: "text",
-          text: `RAW MINIMAX RESPONSE: ${JSON.stringify(data)}`
+          text: finalText
         }]
       })
     };
 
   } catch (error) {
+    console.error('MiniMax Function Error:', error);
     return {
       statusCode: 500,
       headers: {
