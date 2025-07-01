@@ -10,34 +10,33 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // SiliconFlow MiniMax-M1-80k Integration - Premium 80K Thinking Budget
-    const response = await fetch('https://api.ap.siliconflow.com/v1/chat/completions', {
+    // OpenRouter MiniMax-M1 Standard - Reliable & Full 1M Context
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SILICONFLOW_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'HTTP-Referer': 'https://thepromptlink.com',
+        'X-Title': 'ThePromptLink Multi-Agent Platform'
       },
       body: JSON.stringify({
-        model: 'MiniMaxAI/MiniMax-M1-80k',
+        model: "minimax/minimax-m1",  // Standard model - NOT :extended
         messages: [
           {
-            role: 'user',
+            role: "user", 
             content: message
           }
         ],
-        max_tokens: 4096,
-        temperature: 0.7,
-        extra_body: {
-          "thinking_budget": 1024  // Premium reasoning capability
-        }
+        max_tokens: 80000,
+        temperature: 0.7
       })
     });
 
     const data = await response.json();
-    console.log('SiliconFlow MiniMax-M1-80k Response:', JSON.stringify(data, null, 2));
+    console.log('OpenRouter MiniMax-M1 Standard Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
-      console.error('SiliconFlow API Error:', JSON.stringify(data, null, 2));
+      console.error('OpenRouter MiniMax API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -49,11 +48,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ PARSE OPENAI-COMPATIBLE RESPONSE FORMAT
+    // ✅ PARSE OPENROUTER RESPONSE FORMAT
     let finalText;
     if (data?.choices?.[0]?.message?.content) {
+      // Standard OpenRouter/OpenAI format
       finalText = data.choices[0].message.content;
     } else {
+      // Fallback with debug info
       finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
     }
     
