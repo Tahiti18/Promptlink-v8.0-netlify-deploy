@@ -10,22 +10,16 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // OpenRouter MiniMax-M1 Standard - Reliable & Full 1M Context
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://thepromptlink.com',
-        'X-Title': 'ThePromptLink Multi-Agent Platform'
       },
       body: JSON.stringify({
-        model: "minimax/minimax-m1",  // Standard model - NOT :extended
+        model: 'minimax/abab6.5s-chat',
         messages: [
-          {
-            role: "user", 
-            content: message
-          }
+          { role: 'user', content: message }
         ],
         max_tokens: 80000,
         temperature: 0.7
@@ -93,3 +87,4 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
