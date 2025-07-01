@@ -647,7 +647,7 @@
                     <div class="text-sm text-gray-300 space-y-2">
                         <div>1. Problem Definition: Clarify the core issue</div>
                         <div>2. Root Cause Analysis: Identify underlying factors</div>
-                        <div>3. Solution Generation: Brainstorm potential approaches</div>
+                       <div>3. Solution Generation: Brainstorm potential approaches</div>
                         <div>4. Evaluation: Assess feasibility and impact</div>
                     </div>
                 </details>
@@ -709,7 +709,6 @@
     </div>
 
     <script>
-        // Session Management
         let sessionData = {
             messages: [],
             agents: {
@@ -724,7 +723,6 @@
             lastPrompts: {}
         };
 
-        // Professional Claude Sonnet 4.0 Integration
         async function sendToClaude() {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
@@ -789,7 +787,6 @@
             }
         }
 
-        // Professional ChatGPT 4.1 Integration
         async function sendToChatGPT() {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
@@ -854,7 +851,6 @@
             }
         }
 
-        // Professional MiniMax-M1 Integration
         async function sendToMiniMax() {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
@@ -919,26 +915,17 @@
             }
         }
 
-        // Send to All Agents
         async function sendToAll() {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
                 alert('Please enter a message first!');
                 return;
             }
-
-            // Send to all three agents simultaneously
-            Promise.all([
-                sendToClaude(),
-                sendToChatGPT(),
-                sendToMiniMax()
-            ]);
+            Promise.all([sendToClaude(), sendToChatGPT(), sendToMiniMax()]);
         }
 
-        // Enhanced Toolbar Functions
         function rateResponse(agent, rating) {
             console.log(`Rated ${agent} response: ${rating}`);
-            // Add visual feedback
             const message = rating === 'up' ? 'Response rated positively' : 'Response rated negatively';
             addToSessionMemory('System', `${agent} ${message}`, new Date().toLocaleTimeString());
         }
@@ -976,7 +963,6 @@
         }
 
         function toggleView(agent) {
-            // Toggle between formatted and raw JSON view
             console.log(`Toggling view for ${agent}`);
         }
 
@@ -990,7 +976,6 @@
             a.click();
         }
 
-        // Session Management Functions
         function addToSessionMemory(speaker, message, timestamp) {
             const memory = document.getElementById('sessionMemory');
             const bubble = document.createElement('div');
@@ -1018,7 +1003,6 @@
             document.getElementById('humanInputs').textContent = Math.floor(totalMessages / 2);
         }
 
-        // Human Controller Functions
         function sendToAgent(agent) {
             const input = document.getElementById('humanInput').value.trim();
             if (!input) return;
@@ -1060,14 +1044,12 @@
             console.log('Voice interaction toggled');
         }
 
-        // Export Functions
         function exportSession(format) {
             const sessionContent = document.getElementById('sessionMemory').innerHTML;
             let content, mimeType, extension;
             
             switch(format) {
                 case 'pdf':
-                    // For PDF, we'll use print functionality
                     window.print();
                     return;
                 case 'json':
@@ -1090,13 +1072,11 @@
             a.click();
         }
 
-        // Event Listeners
         document.getElementById('sendToAllBtn').addEventListener('click', sendToAll);
         document.getElementById('sendToClaudeBtn').addEventListener('click', sendToClaude);
         document.getElementById('sendToChatGPTBtn').addEventListener('click', sendToChatGPT);
         document.getElementById('sendToMiniMaxBtn').addEventListener('click', sendToMiniMax);
 
-        // Enter key support
         document.getElementById('masterPrompt').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -1104,7 +1084,6 @@
             }
         });
 
-        // Preset Management
         document.querySelectorAll('[data-preset]').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('[data-preset]').forEach(b => b.classList.remove('active'));
@@ -1114,14 +1093,12 @@
             });
         });
 
-        // Update session timer
         setInterval(() => {
             const sessionTimeMs = Date.now() - sessionData.startTime;
             const sessionTimeSec = Math.floor(sessionTimeMs / 1000);
             document.getElementById('sessionTime').textContent = sessionTimeSec + 's';
         }, 1000);
 
-        // Initialize
         console.log('🚀 ThePromptLink v7.0 Professional Platform Initialized');
         console.log('🤖 3-Agent Architecture: Claude Sonnet 4.0 + ChatGPT 4.1 + MiniMax-M1');
         console.log('💚 Ready for revolutionary AI collaboration!');
