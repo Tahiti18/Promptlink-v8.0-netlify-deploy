@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'minimax/minimax-m1',
+        model: 'minimax/minimax-01',  // ✅ CHANGED TO MINIMAX-01
         messages: [
           { role: 'user', content: message }
         ],
@@ -46,10 +46,10 @@ exports.handler = async (event, context) => {
       };
     }
 
-    console.log('OpenRouter MiniMax Response:', JSON.stringify(data, null, 2));
+    console.log('OpenRouter MiniMax-01 Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok || data.error) {
-      console.error('OpenRouter MiniMax API Error:', JSON.stringify(data, null, 2));
+      console.error('OpenRouter MiniMax-01 API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -100,7 +100,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('MiniMax Function Error:', error);
+    console.error('MiniMax-01 Function Error:', error);
     return {
       statusCode: 500,
       headers: {
