@@ -1,4 +1,4 @@
-Copyconst fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   try {
@@ -10,7 +10,6 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Using OpenRouter for MiniMax-M1 Extended (FREE) access
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -33,10 +32,8 @@ exports.handler = async (event, context) => {
     });
 
     const data = await response.json();
-    console.log('MiniMax M1 Extended Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
-      console.error('MiniMax API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -48,33 +45,11 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ ROBUST RESPONSE PARSING - Handles multiple formats
-    let finalText;
-    if (data?.choices?.[0]?.message?.content) {
-      // Standard OpenAI format
-      finalText = data.choices[0].message.content;
-    } else if (data?.content?.[0]?.text) {
-      // Anthropic-style format
-      finalText = data.content[0].text;
-    } else if (data?.message?.content) {
-      // Alternative format
-      finalText = data.message.content;
-    } else if (data?.output) {
-      // Direct output format
-      finalText = data.output;
-    } else if (data?.text) {
-      // Simple text format
-      finalText = data.text;
-    } else {
-      // Fallback with debug info
-      finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
-    }
-    
-    finalText = finalText
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>')
-      .replace(/^/, '<p>')
-      .replace(/$/, '</p>');
+    // 🔍 SIMPLE DEBUG - Show us EXACTLY what MiniMax sends
+    const debugInfo = `
+    <h3>MiniMax Response Debug:</h3>
+    <pre>${JSON.stringify(data, null, 2)}</pre>
+    `;
 
     return {
       statusCode: 200,
@@ -86,13 +61,12 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         content: [{
           type: "text",
-          text: finalText
+          text: debugInfo
         }]
       })
     };
 
   } catch (error) {
-    console.error('MiniMax Function Error:', error);
     return {
       statusCode: 500,
       headers: {
