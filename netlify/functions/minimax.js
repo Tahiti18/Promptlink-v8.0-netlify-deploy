@@ -10,7 +10,7 @@ exports.handler = async (event, context) => {
       }
     }
 
-    // Using OpenRouter for MiniMax-M1 access
+    // Using OpenRouter for MiniMax-M1 Extended (FREE) access
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
         'X-Title': 'ThePromptLink Multi-Agent Platform'
       },
       body: JSON.stringify({
-        model: "minimax/minimax-m1",
+        model: "minimax/minimax-m1:extended",
         messages: [
           {
             role: "user", 
@@ -33,7 +33,7 @@ exports.handler = async (event, context) => {
     });
 
     const data = await response.json();
-    console.log('MiniMax M1 Response:', JSON.stringify(data, null, 2));
+    console.log('MiniMax M1 Extended Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
       console.error('MiniMax API Error:', JSON.stringify(data, null, 2));
