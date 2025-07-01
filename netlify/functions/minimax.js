@@ -45,12 +45,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // 🔍 SIMPLE DEBUG - Show us EXACTLY what MiniMax sends
-    const debugInfo = `
-    <h3>MiniMax Response Debug:</h3>
-    <pre>${JSON.stringify(data, null, 2)}</pre>
-    `;
-
+    // 🔍 ULTRA-SIMPLE DEBUG - Just return the raw data as text
     return {
       statusCode: 200,
       headers: {
@@ -61,7 +56,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         content: [{
           type: "text",
-          text: debugInfo
+          text: `RAW MINIMAX RESPONSE: ${JSON.stringify(data)}`
         }]
       })
     };
