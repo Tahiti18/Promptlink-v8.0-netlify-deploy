@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
     });
 
     const data = await response.json();
-    console.log('OpenRouter MiniMax-M1 Standard Response:', JSON.stringify(data, null, 2));
+    console.log('OpenRouter MiniMax FULL Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
       console.error('OpenRouter MiniMax API Error:', JSON.stringify(data, null, 2));
@@ -42,22 +42,41 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ PARSE OPENROUTER RESPONSE FORMAT
-    let finalText;
+    // ✅ FLEXIBLE RESPONSE PARSING - Try multiple possible formats
+    let finalText = '';
+    
     if (data?.choices?.[0]?.message?.content) {
-      // Standard OpenRouter/OpenAI format
+      // Standard OpenAI/OpenRouter format
       finalText = data.choices[0].message.content;
+      console.log('SUCCESS: Standard format detected');
+    } else if (data?.message) {
+      // Alternative format 1
+      finalText = data.message;
+      console.log('SUCCESS: Alternative format 1 detected');
+    } else if (data?.text) {
+      // Alternative format 2
+      finalText = data.text;
+      console.log('SUCCESS: Alternative format 2 detected');
+    } else if (data?.content) {
+      // Alternative format 3
+      finalText = data.content;
+      console.log('SUCCESS: Alternative format 3 detected');
+    } else if (typeof data === 'string') {
+      // Direct string response
+      finalText = data;
+      console.log('SUCCESS: Direct string format detected');
     } else {
-      // Fallback with debug info
-      finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
+      // Debug: Show exact structure received
+      finalText = `DEBUG - MiniMax response structure: ${JSON.stringify(data, null, 2)}`;
+      console.log('DEBUG: Unknown format, showing structure');
     }
     
     // ✅ FORMAT TEXT WITH PROPER LINE BREAKS (matching Claude/ChatGPT)
     finalText = finalText
-      .replace(/\n\n/g, '</p><p>')  // Double line breaks = new paragraphs
-      .replace(/\n/g, '<br>')       // Single line breaks = <br>
-      .replace(/^/, '<p>')          // Start with paragraph
-      .replace(/$/, '</p>');        // End with paragraph
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
 
     return {
       statusCode: 200,
@@ -87,4 +106,3 @@ exports.handler = async (event, context) => {
     };
   }
 };
-
