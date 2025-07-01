@@ -6,7 +6,7 @@
     <title>ThePromptLink - Professional Multi-Agent AI Platform v7.0</title>
     <meta name="description" content="Advanced multi-agent AI communication platform with autonomous relay logic and professional workflow management">
     <meta property="og:title" content="ThePromptLink - Professional Multi-Agent AI Platform v7.0">
-    <meta property="og:description" content="Professional multi-agent AI coordination platform with Claude, ChatGPT, and MiniMax">
+    <meta property="og:description" content="Professional multi-agent AI coordination platform with Claude, ChatGPT, and Llama">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
@@ -19,7 +19,7 @@
             --graphite: #3d3a57;
             --fog-white: #e6e6e9;
             --steel-blue: #59698d;
-            --minimax-purple: #8B5CF6;
+            --llama-purple: #8B5CF6;
         }
 
         body {
@@ -106,9 +106,9 @@
             border-left: 3px solid #10B981;
         }
 
-        .agent-panel-minimax {
+        .agent-panel-llama {
             background: var(--graphite);
-            border-left: 3px solid var(--minimax-purple);
+            border-left: 3px solid var(--llama-purple);
         }
 
         .agent-icon {
@@ -119,8 +119,8 @@
             color: #10B981;
         }
 
-        .agent-icon-minimax {
-            color: var(--minimax-purple);
+        .agent-icon-llama {
+            color: var(--llama-purple);
         }
 
         .message-bubble {
@@ -246,7 +246,7 @@
         }
 
         .context-indicator {
-            background: var(--minimax-purple);
+            background: var(--llama-purple);
             color: white;
             padding: 2px 6px;
             border-radius: 12px;
@@ -317,8 +317,8 @@
                 <button id="sendToChatGPTBtn" class="btn-secondary px-4 py-2 rounded-lg">
                     <i class="fas fa-comments mr-2"></i>ChatGPT Only
                 </button>
-                <button id="sendToMiniMaxBtn" class="btn-secondary px-4 py-2 rounded-lg">
-                    <i class="fas fa-brain mr-2"></i>MiniMax Only
+                <button id="sendToLlamaBtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-brain mr-2"></i>Llama Only
                 </button>
                 <button onclick="document.getElementById('masterPrompt').value=''" class="btn-secondary px-4 py-2 rounded-lg">
                     <i class="fas fa-eraser mr-2"></i>Clear
@@ -336,7 +336,7 @@
                         Agent A - Claude Sonnet 4.0
                     </h3>
                     <select class="role-selector px-3 py-1 rounded text-sm">
-                        <option>Strategist</option>
+                        <option>Creative Strategist</option>
                         <option>Critic</option>
                         <option>Builder</option>
                         <option>Visionary</option>
@@ -406,7 +406,7 @@
                         Agent B - ChatGPT 4.1 Turbo
                     </h3>
                     <select class="role-selector px-3 py-1 rounded text-sm">
-                        <option>Analyzer</option>
+                        <option>Versatile Analyzer</option>
                         <option>Devil's Advocate</option>
                         <option>Creator</option>
                         <option>Challenger</option>
@@ -468,16 +468,16 @@
                 </div>
             </div>
 
-            <!-- Agent C - MiniMax -->
+            <!-- Agent C - Llama -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-brain mr-2 agent-icon-minimax"></i>
-                        Agent C - MiniMax-M1
-                        <span class="context-indicator ml-2">1M+ TOKENS</span>
+                        <i class="fas fa-brain mr-2 agent-icon-llama"></i>
+                        Agent C - Llama 3.3 70B
+                        <span class="context-indicator ml-2">70B PARAMS</span>
                     </h3>
                     <select class="role-selector px-3 py-1 rounded text-sm">
-                        <option>Deep Context Specialist</option>
+                        <option>Meta Powerhouse</option>
                         <option>Reasoning Expert</option>
                         <option>Document Analyst</option>
                         <option>Complex Problem Solver</option>
@@ -486,54 +486,54 @@
 
                 <!-- Enhanced Toolbar -->
                 <div class="agent-toolbar">
-                    <button class="toolbar-btn" onclick="rateResponse('minimax', 'up')">
+                    <button class="toolbar-btn" onclick="rateResponse('llama', 'up')">
                         <i class="fas fa-thumbs-up"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="rateResponse('minimax', 'down')">
+                    <button class="toolbar-btn" onclick="rateResponse('llama', 'down')">
                         <i class="fas fa-thumbs-down"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="regenerateResponse('minimax')">
+                    <button class="toolbar-btn" onclick="regenerateResponse('llama')">
                         <i class="fas fa-redo"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="copyResponse('minimax')">
+                    <button class="toolbar-btn" onclick="copyResponse('llama')">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="editAndRerun('minimax')">
+                    <button class="toolbar-btn" onclick="editAndRerun('llama')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="clearAgentOutput('minimax')">
+                    <button class="toolbar-btn" onclick="clearAgentOutput('llama')">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="toggleView('minimax')">
+                    <button class="toolbar-btn" onclick="toggleView('llama')">
                         <i class="fas fa-code"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="exportResponse('minimax')">
+                    <button class="toolbar-btn" onclick="exportResponse('llama')">
                         <i class="fas fa-download"></i>
                     </button>
                 </div>
                 
-                <div class="agent-panel-minimax p-4 rounded-lg mb-4" style="min-height: 200px;">
-                    <div id="agent-minimax-content">
+                <div class="agent-panel-llama p-4 rounded-lg mb-4" style="min-height: 200px;">
+                    <div id="agent-llama-content">
                         <div class="message-bubble p-3">
                             <div class="text-sm text-gray-400 mb-1">Ready</div>
-                            <div>MiniMax-M1 is ready for ultra-long context processing and complex reasoning.</div>
+                            <div>Llama 3.3 70B is ready for meta powerhouse reasoning.</div>
                         </div>
                     </div>
-                    <div class="thinking-indicator text-center py-4" id="minimax-thinking">
+                    <div class="thinking-indicator text-center py-4" id="llama-thinking">
                         <div class="inline-flex space-x-1">
-                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--minimax-purple);"></div>
-                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--minimax-purple); animation-delay: 0.3s;"></div>
-                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--minimax-purple); animation-delay: 0.6s;"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--llama-purple);"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--llama-purple); animation-delay: 0.3s;"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--llama-purple); animation-delay: 0.6s;"></div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-2">MiniMax is reasoning...</div>
+                        <div class="text-sm text-gray-400 mt-2">Llama is processing...</div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('minimax')">
-                        <i class="fas fa-edit mr-2 agent-icon-minimax"></i>Replace
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('llama')">
+                        <i class="fas fa-edit mr-2 agent-icon-llama"></i>Replace
                     </button>
-                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToMiniMax()">
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToLlama()">
                         <i class="fas fa-arrow-right mr-2"></i>Send
                     </button>
                 </div>
@@ -581,7 +581,7 @@
                 <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('chatgpt')">
                     <i class="fas fa-arrow-right mr-2"></i>To Agent B
                 </button>
-                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('minimax')">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('llama')">
                     <i class="fas fa-arrow-up mr-2"></i>To Agent C
                 </button>
                 <button class="btn-secondary px-4 py-2 rounded-lg" onclick="sendToAllAgents()">
@@ -664,14 +664,9 @@
             </div>
         </div>
 
-        <!-- Session Statistics -->
-        <div class="glass-panel p-6 mb-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center">
-                <i class="fas fa-chart-line mr-2 fluorescent-icon"></i>
-                Session Statistics
+        Session Statistics
             </h3>
-            
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold fluorescent-icon" id="totalMessages">0</div>
                     <div class="text-sm text-gray-400">Total Messages</div>
@@ -689,7 +684,7 @@
                     <div class="text-sm text-gray-400">Human Inputs</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold" style="color: var(--minimax-purple);" id="activeAgents">3</div>
+                    <div class="text-2xl font-bold" style="color: var(--llama-purple);" id="activeAgents">3</div>
                     <div class="text-sm text-gray-400">Active Agents</div>
                 </div>
             </div>
@@ -704,7 +699,7 @@
                 <span>•</span>
                 <span>Version 7.0 - 3-Agent Ready!</span>
             </div>
-            <div>Professional AI coordination for strategic workflows • Claude Sonnet 4.0 • ChatGPT 4.1 Turbo • MiniMax-M1</div>
+            <div>Professional AI coordination for strategic workflows • Claude Sonnet 4.0 • ChatGPT 4.1 Turbo • Llama 3.3 70B</div>
         </footer>
     </div>
 
@@ -712,9 +707,9 @@
         let sessionData = {
             messages: [],
             agents: {
-                claude: { role: 'Strategist', active: true, tokens: 0 },
-                chatgpt: { role: 'Analyzer', active: true, tokens: 0 },
-                minimax: { role: 'Deep Context Specialist', active: true, tokens: 0 }
+                claude: { role: 'Creative Strategist', active: true, tokens: 0 },
+                chatgpt: { role: 'Versatile Analyzer', active: true, tokens: 0 },
+                llama: { role: 'Meta Powerhouse', active: true, tokens: 0 }
             },
             preset: 'debate',
             relayActive: false,
@@ -851,23 +846,23 @@
             }
         }
 
-        async function sendToMiniMax() {
+        async function sendToLlama() {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
                 alert('Please enter a message first!');
                 return;
             }
 
-            const button = document.getElementById('sendToMiniMaxBtn');
+            const button = document.getElementById('sendToLlamaBtn');
             const originalText = button.innerHTML;
             button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
             button.disabled = true;
 
-            const thinkingIndicator = document.getElementById('minimax-thinking');
+            const thinkingIndicator = document.getElementById('llama-thinking');
             thinkingIndicator.classList.add('active');
 
             try {
-                const response = await fetch('/.netlify/functions/minimax', {
+                const response = await fetch('/.netlify/functions/llama', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -878,7 +873,7 @@
                 });
 
                 const data = await response.json();
-                console.log('MiniMax M1 Response:', data);
+                console.log('Llama 3.3 70B Response:', data);
 
                 const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
                     ? data.content[0].text 
@@ -887,26 +882,26 @@
                 const timestamp = new Date().toLocaleTimeString();
                 thinkingIndicator.classList.remove('active');
 
-                document.getElementById('agent-minimax-content').innerHTML = `
-                    <div class="message-bubble p-3" style="border-left: 3px solid var(--minimax-purple);">
-                        <div class="text-sm text-gray-400 mb-1">Deep Analysis Complete - ${timestamp}</div>
+                document.getElementById('agent-llama-content').innerHTML = `
+                    <div class="message-bubble p-3" style="border-left: 3px solid var(--llama-purple);">
+                        <div class="text-sm text-gray-400 mb-1">Meta Analysis Complete - ${timestamp}</div>
                         <div>${reply}</div>
                     </div>
                 `;
 
-                addToSessionMemory('You → MiniMax', userInput, timestamp);
-                addToSessionMemory('MiniMax-M1', reply, timestamp);
+                addToSessionMemory('You → Llama', userInput, timestamp);
+                addToSessionMemory('Llama 3.3 70B', reply, timestamp);
                 updateStats();
-                sessionData.lastPrompts.minimax = userInput;
+                sessionData.lastPrompts.llama = userInput;
 
             } catch (error) {
-                console.error('MiniMax integration error:', error);
+                console.error('Llama integration error:', error);
                 thinkingIndicator.classList.remove('active');
 
-                document.getElementById('agent-minimax-content').innerHTML = `
+                document.getElementById('agent-llama-content').innerHTML = `
                     <div class="message-bubble p-3">
                         <div class="text-sm text-gray-400 mb-1">Connection Error</div>
-                        <div>Unable to connect to MiniMax-M1: ${error.message}</div>
+                        <div>Unable to connect to Llama 3.3 70B: ${error.message}</div>
                     </div>
                 `;
             } finally {
@@ -921,7 +916,7 @@
                 alert('Please enter a message first!');
                 return;
             }
-            Promise.all([sendToClaude(), sendToChatGPT(), sendToMiniMax()]);
+            Promise.all([sendToClaude(), sendToChatGPT(), sendToLlama()]);
         }
 
         function rateResponse(agent, rating) {
@@ -936,7 +931,7 @@
                 switch(agent) {
                     case 'claude': sendToClaude(); break;
                     case 'chatgpt': sendToChatGPT(); break;
-                    case 'minimax': sendToMiniMax(); break;
+                    case 'llama': sendToLlama(); break;
                 }
             }
         }
@@ -1011,7 +1006,7 @@
             switch(agent) {
                 case 'claude': sendToClaude(); break;
                 case 'chatgpt': sendToChatGPT(); break;
-                case 'minimax': sendToMiniMax(); break;
+                case 'llama': sendToLlama(); break;
             }
             document.getElementById('humanInput').value = '';
         }
@@ -1075,7 +1070,7 @@
         document.getElementById('sendToAllBtn').addEventListener('click', sendToAll);
         document.getElementById('sendToClaudeBtn').addEventListener('click', sendToClaude);
         document.getElementById('sendToChatGPTBtn').addEventListener('click', sendToChatGPT);
-        document.getElementById('sendToMiniMaxBtn').addEventListener('click', sendToMiniMax);
+        document.getElementById('sendToLlamaBtn').addEventListener('click', sendToLlama);
 
         document.getElementById('masterPrompt').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -1100,8 +1095,11 @@
         }, 1000);
 
         console.log('🚀 ThePromptLink v7.0 Professional Platform Initialized');
-        console.log('🤖 3-Agent Architecture: Claude Sonnet 4.0 + ChatGPT 4.1 + MiniMax-M1');
+        console.log('🤖 3-Agent Architecture: Claude Sonnet 4.0 + ChatGPT 4.1 + Llama 3.3 70B');
         console.log('💚 Ready for revolutionary AI collaboration!');
     </script>
 </body>
 </html>
+            
+
+
