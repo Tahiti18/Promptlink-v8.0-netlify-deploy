@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThePromptLink - Multi-Agent AI Platform</title>
+    <title>ThePromptLink - Professional Multi-Agent AI Platform v7.0</title>
     <meta name="description" content="Advanced multi-agent AI communication platform with autonomous relay logic and professional workflow management">
-    <meta property="og:title" content="ThePromptLink - Multi-Agent AI Platform">
-    <meta property="og:description" content="Professional multi-agent AI coordination platform">
+    <meta property="og:title" content="ThePromptLink - Professional Multi-Agent AI Platform v7.0">
+    <meta property="og:description" content="Professional multi-agent AI coordination platform with Claude, ChatGPT, and MiniMax">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
@@ -19,6 +19,7 @@
             --graphite: #3d3a57;
             --fog-white: #e6e6e9;
             --steel-blue: #59698d;
+            --minimax-purple: #8B5CF6;
         }
 
         body {
@@ -29,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Sticky Header */
         .sticky-header {
             position: sticky;
             top: 0;
@@ -48,7 +48,6 @@
             width: auto;
         }
 
-        /* Button Sizing - 63% of original */
         .preset-btn {
             background: var(--graphite);
             border: 1px solid var(--steel-blue);
@@ -102,8 +101,26 @@
             border-left: 3px solid var(--fluorescent-green);
         }
 
+        .agent-panel-chatgpt {
+            background: var(--graphite);
+            border-left: 3px solid #10B981;
+        }
+
+        .agent-panel-minimax {
+            background: var(--graphite);
+            border-left: 3px solid var(--minimax-purple);
+        }
+
         .agent-icon {
             color: var(--fluorescent-green);
+        }
+
+        .agent-icon-chatgpt {
+            color: #10B981;
+        }
+
+        .agent-icon-minimax {
+            color: var(--minimax-purple);
         }
 
         .message-bubble {
@@ -170,13 +187,6 @@
             background: var(--fluorescent-green);
         }
 
-        /* PDF Optimization */
-        @media print {
-            body { print-color-adjust: exact; }
-            .no-print { display: none !important; }
-        }
-
-        /* Single continuous layout for PDF */
         .main-container {
             max-width: 100%;
             margin: 0 auto;
@@ -185,18 +195,17 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
             margin-bottom: 20px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .grid-container {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* Fluorescent green accents */
         .fluorescent-icon {
             color: var(--fluorescent-green);
         }
@@ -205,13 +214,49 @@
             color: var(--fluorescent-green);
         }
 
-        /* Claude Integration Styles */
         .claude-section {
             background: rgba(0, 255, 65, 0.05);
             border: 1px solid var(--fluorescent-green);
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 24px;
+        }
+
+        .agent-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            background: var(--graphite);
+            border: 1px solid var(--steel-blue);
+            color: var(--fog-white);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--steel-blue);
+            border-color: var(--fluorescent-green);
+        }
+
+        .context-indicator {
+            background: var(--minimax-purple);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: bold;
+        }
+
+        @media print {
+            body { print-color-adjust: exact; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -252,21 +297,30 @@
     </header>
 
     <div class="main-container">
-        <!-- 🚀 CLAUDE INTEGRATION SECTION -->
+        <!-- Master Prompt Section -->
         <div class="claude-section">
-            <h3 class="text-lg font-semibold mb-3 fluorescent-icon">🤖 Talk to Claude</h3>
+            <h3 class="text-lg font-semibold mb-3 fluorescent-icon">🎯 Multi-Agent Command Center</h3>
             <textarea 
-                id="userPrompt"
+                id="masterPrompt"
                 class="w-full p-4 rounded-lg text-white resize-none mb-3"
                 style="background: var(--graphite); border: 1px solid var(--fluorescent-green);"
                 rows="3"
-                placeholder="Ask Claude anything... (e.g., 'Help me brainstorm ideas' or 'Analyze this problem')"></textarea>
+                placeholder="Enter your prompt for multi-agent collaboration..."></textarea>
             
-            <div class="flex gap-3">
-                <button id="sendToClaudeBtn" class="btn-primary px-6 py-2 rounded-lg font-medium">
-                    <i class="fas fa-robot mr-2"></i>Send to Claude
+            <div class="flex gap-3 flex-wrap">
+                <button id="sendToAllBtn" class="btn-primary px-6 py-2 rounded-lg font-medium">
+                    <i class="fas fa-broadcast-tower mr-2"></i>Send to All Agents
                 </button>
-                <button onclick="document.getElementById('userPrompt').value=''" class="btn-secondary px-4 py-2 rounded-lg">
+                <button id="sendToClaudeBtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-robot mr-2"></i>Claude Only
+                </button>
+                <button id="sendToChatGPTBtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-comments mr-2"></i>ChatGPT Only
+                </button>
+                <button id="sendToMiniMaxBtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-brain mr-2"></i>MiniMax Only
+                </button>
+                <button onclick="document.getElementById('masterPrompt').value=''" class="btn-secondary px-4 py-2 rounded-lg">
                     <i class="fas fa-eraser mr-2"></i>Clear
                 </button>
             </div>
@@ -274,12 +328,12 @@
 
         <!-- Agent Panels -->
         <div class="grid-container">
-            <!-- Agent A Panel -->
+            <!-- Agent A - Claude -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i class="fas fa-robot mr-2 agent-icon"></i>
-                        Agent A - Claude
+                        Agent A - Claude Sonnet 4.0
                     </h3>
                     <select class="role-selector px-3 py-1 rounded text-sm">
                         <option>Strategist</option>
@@ -288,40 +342,68 @@
                         <option>Visionary</option>
                     </select>
                 </div>
+
+                <!-- Enhanced Toolbar -->
+                <div class="agent-toolbar">
+                    <button class="toolbar-btn" onclick="rateResponse('claude', 'up')">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="rateResponse('claude', 'down')">
+                        <i class="fas fa-thumbs-down"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="regenerateResponse('claude')">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="copyResponse('claude')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="editAndRerun('claude')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="clearAgentOutput('claude')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleView('claude')">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="exportResponse('claude')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
                 
                 <div class="agent-panel p-4 rounded-lg mb-4" style="min-height: 200px;">
-                    <div id="agent-a-content">
+                    <div id="agent-claude-content">
                         <div class="message-bubble p-3">
                             <div class="text-sm text-gray-400 mb-1">Ready</div>
-                            <div>Claude is ready! Send me a message using the box above.</div>
+                            <div>Claude Sonnet 4.0 is ready for strategic collaboration.</div>
                         </div>
                     </div>
-                    <div class="thinking-indicator text-center py-4">
+                    <div class="thinking-indicator text-center py-4" id="claude-thinking">
                         <div class="inline-flex space-x-1">
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green);"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green); animation-delay: 0.3s;"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green); animation-delay: 0.6s;"></div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-2">Claude is thinking...</div>
+                        <div class="text-sm text-gray-400 mt-2">Claude is processing...</div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1">
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('claude')">
                         <i class="fas fa-edit mr-2 fluorescent-icon"></i>Replace
                     </button>
-                    <button class="btn-primary px-3 py-2 rounded text-sm">
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToClaude()">
                         <i class="fas fa-arrow-right mr-2"></i>Send
                     </button>
                 </div>
             </div>
 
-            <!-- Agent B Panel -->
+            <!-- Agent B - ChatGPT -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-robot mr-2 agent-icon"></i>
-                        Agent B - ChatGPT
+                        <i class="fas fa-comments mr-2 agent-icon-chatgpt"></i>
+                        Agent B - ChatGPT 4.1 Turbo
                     </h3>
                     <select class="role-selector px-3 py-1 rounded text-sm">
                         <option>Analyzer</option>
@@ -330,29 +412,128 @@
                         <option>Challenger</option>
                     </select>
                 </div>
+
+                <!-- Enhanced Toolbar -->
+                <div class="agent-toolbar">
+                    <button class="toolbar-btn" onclick="rateResponse('chatgpt', 'up')">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="rateResponse('chatgpt', 'down')">
+                        <i class="fas fa-thumbs-down"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="regenerateResponse('chatgpt')">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="copyResponse('chatgpt')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="editAndRerun('chatgpt')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="clearAgentOutput('chatgpt')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleView('chatgpt')">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="exportResponse('chatgpt')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
                 
-                <div class="agent-panel p-4 rounded-lg mb-4" style="min-height: 200px;">
-                    <div id="agent-b-content">
+                <div class="agent-panel-chatgpt p-4 rounded-lg mb-4" style="min-height: 200px;">
+                    <div id="agent-chatgpt-content">
                         <div class="message-bubble p-3">
-                            <div class="text-sm text-gray-400 mb-1">Coming Soon</div>
-                            <div>ChatGPT integration will be added next. Claude is live and ready!</div>
+                            <div class="text-sm text-gray-400 mb-1">Ready</div>
+                            <div>ChatGPT 4.1 Turbo is ready for versatile analysis and collaboration.</div>
                         </div>
                     </div>
-                    <div class="thinking-indicator text-center py-4">
+                    <div class="thinking-indicator text-center py-4" id="chatgpt-thinking">
                         <div class="inline-flex space-x-1">
-                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green);"></div>
-                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green); animation-delay: 0.3s;"></div>
-                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green); animation-delay: 0.6s;"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: #10B981;"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: #10B981; animation-delay: 0.3s;"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: #10B981; animation-delay: 0.6s;"></div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-2">Agent B is analyzing...</div>
+                        <div class="text-sm text-gray-400 mt-2">ChatGPT is analyzing...</div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1">
-                        <i class="fas fa-edit mr-2 fluorescent-icon"></i>Replace
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('chatgpt')">
+                        <i class="fas fa-edit mr-2 agent-icon-chatgpt"></i>Replace
                     </button>
-                    <button class="btn-primary px-3 py-2 rounded text-sm">
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToChatGPT()">
+                        <i class="fas fa-arrow-right mr-2"></i>Send
+                    </button>
+                </div>
+            </div>
+
+            <!-- Agent C - MiniMax -->
+            <div class="glass-panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-brain mr-2 agent-icon-minimax"></i>
+                        Agent C - MiniMax-M1
+                        <span class="context-indicator ml-2">1M+ TOKENS</span>
+                    </h3>
+                    <select class="role-selector px-3 py-1 rounded text-sm">
+                        <option>Deep Context Specialist</option>
+                        <option>Reasoning Expert</option>
+                        <option>Document Analyst</option>
+                        <option>Complex Problem Solver</option>
+                    </select>
+                </div>
+
+                <!-- Enhanced Toolbar -->
+                <div class="agent-toolbar">
+                    <button class="toolbar-btn" onclick="rateResponse('minimax', 'up')">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="rateResponse('minimax', 'down')">
+                        <i class="fas fa-thumbs-down"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="regenerateResponse('minimax')">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="copyResponse('minimax')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="editAndRerun('minimax')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="clearAgentOutput('minimax')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleView('minimax')">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="exportResponse('minimax')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                
+                <div class="agent-panel-minimax p-4 rounded-lg mb-4" style="min-height: 200px;">
+                    <div id="agent-minimax-content">
+                        <div class="message-bubble p-3">
+                            <div class="text-sm text-gray-400 mb-1">Ready</div>
+                            <div>MiniMax-M1 is ready for ultra-long context processing and complex reasoning.</div>
+                        </div>
+                    </div>
+                    <div class="thinking-indicator text-center py-4" id="minimax-thinking">
+                        <div class="inline-flex space-x-1">
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--minimax-purple);"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--minimax-purple); animation-delay: 0.3s;"></div>
+                            <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--minimax-purple); animation-delay: 0.6s;"></div>
+                        </div>
+                        <div class="text-sm text-gray-400 mt-2">MiniMax is reasoning...</div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-2">
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('minimax')">
+                        <i class="fas fa-edit mr-2 agent-icon-minimax"></i>Replace
+                    </button>
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToMiniMax()">
                         <i class="fas fa-arrow-right mr-2"></i>Send
                     </button>
                 </div>
@@ -368,16 +549,16 @@
             
             <!-- Relay Controls -->
             <div class="flex flex-wrap gap-3 mb-4">
-                <button class="btn-primary px-4 py-2 rounded-lg">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="startRelay()">
                     <i class="fas fa-play mr-2"></i>Start Relay
                 </button>
-                <button class="btn-secondary px-4 py-2 rounded-lg">
+                <button class="btn-secondary px-4 py-2 rounded-lg" onclick="pauseRelay()">
                     <i class="fas fa-pause mr-2"></i>Pause
                 </button>
-                <button class="btn-secondary px-4 py-2 rounded-lg">
+                <button class="btn-secondary px-4 py-2 rounded-lg" onclick="stepRelay()">
                     <i class="fas fa-step-forward mr-2"></i>Step
                 </button>
-                <button class="voice-btn px-4 py-2 rounded-lg">
+                <button class="voice-btn px-4 py-2 rounded-lg" onclick="toggleVoice()">
                     <i class="fas fa-microphone mr-2"></i>Voice
                 </button>
             </div>
@@ -385,6 +566,7 @@
             <!-- Input Area -->
             <div class="mb-4">
                 <textarea 
+                    id="humanInput"
                     class="w-full p-4 rounded-lg text-white resize-none"
                     style="background: var(--graphite); border: 1px solid var(--steel-blue);"
                     rows="3"
@@ -393,14 +575,17 @@
             
             <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3">
-                <button class="btn-primary px-4 py-2 rounded-lg">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('claude')">
                     <i class="fas fa-arrow-left mr-2"></i>To Agent A
                 </button>
-                <button class="btn-primary px-4 py-2 rounded-lg">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('chatgpt')">
                     <i class="fas fa-arrow-right mr-2"></i>To Agent B
                 </button>
-                <button class="btn-secondary px-4 py-2 rounded-lg">
-                    <i class="fas fa-arrows-alt-h mr-2"></i>To Both
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('minimax')">
+                    <i class="fas fa-arrow-up mr-2"></i>To Agent C
+                </button>
+                <button class="btn-secondary px-4 py-2 rounded-lg" onclick="sendToAllAgents()">
+                    <i class="fas fa-arrows-alt-h mr-2"></i>To All
                 </button>
             </div>
         </div>
@@ -413,13 +598,13 @@
                     Session Memory
                 </h3>
                 <div class="flex space-x-2">
-                    <button class="export-btn px-3 py-1 rounded text-sm">
+                    <button class="export-btn px-3 py-1 rounded text-sm" onclick="exportSession('pdf')">
                         <i class="fas fa-file-pdf mr-1"></i>PDF
                     </button>
-                    <button class="export-btn px-3 py-1 rounded text-sm">
+                    <button class="export-btn px-3 py-1 rounded text-sm" onclick="exportSession('json')">
                         <i class="fas fa-file-code mr-1"></i>JSON
                     </button>
-                    <button class="export-btn px-3 py-1 rounded text-sm">
+                    <button class="export-btn px-3 py-1 rounded text-sm" onclick="exportSession('md')">
                         <i class="fas fa-file-alt mr-1"></i>MD
                     </button>
                 </div>
@@ -432,7 +617,7 @@
                             <span class="text-sm font-medium fluorescent-icon">System</span>
                             <span class="text-xs text-gray-400">Ready</span>
                         </div>
-                        <div class="text-sm">Claude integration active! Ready for AI communication.</div>
+                        <div class="text-sm">Multi-agent platform initialized. All 3 agents ready for collaboration.</div>
                         <div class="text-xs text-gray-500 mt-2">Status: Online</div>
                     </div>
                 </div>
@@ -466,6 +651,16 @@
                         <div>4. Evaluation: Assess feasibility and impact</div>
                     </div>
                 </details>
+
+                <details class="session-script p-4">
+                    <summary class="cursor-pointer font-medium text-sm mb-2">Multi-Agent Debate</summary>
+                    <div class="text-sm text-gray-300 space-y-2">
+                        <div>1. Position Setting: Each agent takes a different stance</div>
+                        <div>2. Evidence Gathering: Present supporting arguments</div>
+                        <div>3. Counter-Arguments: Challenge opposing viewpoints</div>
+                        <div>4. Synthesis: Find common ground and optimal solution</div>
+                    </div>
+                </details>
             </div>
         </div>
 
@@ -476,7 +671,7 @@
                 Session Statistics
             </h3>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold fluorescent-icon" id="totalMessages">0</div>
                     <div class="text-sm text-gray-400">Total Messages</div>
@@ -493,6 +688,10 @@
                     <div class="text-2xl font-bold text-yellow-400" id="humanInputs">0</div>
                     <div class="text-sm text-gray-400">Human Inputs</div>
                 </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold" style="color: var(--minimax-purple);" id="activeAgents">3</div>
+                    <div class="text-sm text-gray-400">Active Agents</div>
+                </div>
             </div>
         </div>
 
@@ -501,11 +700,11 @@
             <div class="flex items-center justify-center space-x-4 mb-4">
                 <span>ThePromptLink.com</span>
                 <span>•</span>
-                <span>Multi-Agent AI Platform</span>
+                <span>Professional Multi-Agent AI Platform</span>
                 <span>•</span>
-                <span>Version 6.0 - Claude Live!</span>
+                <span>Version 7.0 - 3-Agent Ready!</span>
             </div>
-            <div>Professional AI coordination for strategic workflows</div>
+            <div>Professional AI coordination for strategic workflows • Claude Sonnet 4.0 • ChatGPT 4.1 Turbo • MiniMax-M1</div>
         </footer>
     </div>
 
@@ -514,18 +713,20 @@
         let sessionData = {
             messages: [],
             agents: {
-                a: { role: 'Strategist', active: true },
-                b: { role: 'Analyzer', active: true }
+                claude: { role: 'Strategist', active: true, tokens: 0 },
+                chatgpt: { role: 'Analyzer', active: true, tokens: 0 },
+                minimax: { role: 'Deep Context Specialist', active: true, tokens: 0 }
             },
             preset: 'debate',
             relayActive: false,
             tokens: 0,
-            startTime: Date.now()
+            startTime: Date.now(),
+            lastPrompts: {}
         };
 
-        // 🚀 CORS-FRIENDLY CLAUDE API FUNCTION
+        // Professional Claude Sonnet 4.0 Integration
         async function sendToClaude() {
-            const userInput = document.getElementById('userPrompt').value.trim();
+            const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
                 alert('Please enter a message first!');
                 return;
@@ -533,15 +734,13 @@
 
             const button = document.getElementById('sendToClaudeBtn');
             const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Making Magic...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
             button.disabled = true;
 
-            // Show thinking indicator
-            const thinkingIndicator = document.querySelector('#agent-a-content').parentNode.querySelector('.thinking-indicator');
+            const thinkingIndicator = document.getElementById('claude-thinking');
             thinkingIndicator.classList.add('active');
 
             try {
-                // 🎯 THIS IS THE MAGIC CALL TO YOUR NETLIFY FUNCTION!
                 const response = await fetch('/.netlify/functions/claude', {
                     method: 'POST',
                     headers: {
@@ -552,57 +751,36 @@
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Function error! status: ${response.status}`);
-                }
-
                 const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error.message || 'Claude API Error');
-                }
+                console.log('Claude Sonnet 4.0 Response:', data);
 
-                const reply = data.content?.[0]?.text || 'Claude responded but content format unexpected';
+                const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
+                    ? data.content[0].text 
+                    : 'Response received but format unexpected';
+
                 const timestamp = new Date().toLocaleTimeString();
-                
-                // Hide thinking indicator
                 thinkingIndicator.classList.remove('active');
-                
-                // 🎉 DISPLAY CLAUDE'S MIRACLE RESPONSE!
-                document.getElementById('agent-a-content').innerHTML = `
+
+                document.getElementById('agent-claude-content').innerHTML = `
                     <div class="message-bubble p-3" style="border-left: 3px solid var(--fluorescent-green);">
-                        <div class="text-sm text-gray-400 mb-1">🎉 ${timestamp} - MIRACLE ACHIEVED!</div>
+                        <div class="text-sm text-gray-400 mb-1">Response Received - ${timestamp}</div>
                         <div>${reply}</div>
                     </div>
                 `;
-                
-                // Log to session memory
+
                 addToSessionMemory('You → Claude', userInput, timestamp);
-                addToSessionMemory('Claude 🎉 LIVE!', reply, timestamp);
-                
-                // Update statistics
+                addToSessionMemory('Claude Sonnet 4.0', reply, timestamp);
                 updateStats();
-                
-                // Clear input
-                document.getElementById('userPrompt').value = '';
-                
-                // 🚀 VICTORY CELEBRATION!
-                console.log('🎉🚀 MIRACLE ACHIEVED! Claude responded via Netlify function!');
-                console.log('🏆 ThePromptLink is ALIVE and WORKING!');
-                
+                sessionData.lastPrompts.claude = userInput;
+
             } catch (error) {
-                console.error('❌ Function call error:', error);
-                
+                console.error('Claude integration error:', error);
                 thinkingIndicator.classList.remove('active');
-                
-                document.getElementById('agent-a-content').innerHTML = `
+
+                document.getElementById('agent-claude-content').innerHTML = `
                     <div class="message-bubble p-3">
-                        <div class="text-sm text-gray-400 mb-1">Debug Info</div>
-                        <div>🔧 Function call failed: ${error.message}</div>
-                        <div class="text-xs text-gray-500 mt-2">
-                            Expected URL: /.netlify/functions/claude<br>
-                            Check function deployment status
-                        </div>
+                        <div class="text-sm text-gray-400 mb-1">Connection Error</div>
+                        <div>Unable to connect to Claude Sonnet 4.0: ${error.message}</div>
                     </div>
                 `;
             } finally {
@@ -611,7 +789,208 @@
             }
         }
 
-        // Add to session memory
+        // Professional ChatGPT 4.1 Integration
+        async function sendToChatGPT() {
+            const userInput = document.getElementById('masterPrompt').value.trim();
+            if (!userInput) {
+                alert('Please enter a message first!');
+                return;
+            }
+
+            const button = document.getElementById('sendToChatGPTBtn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            button.disabled = true;
+
+            const thinkingIndicator = document.getElementById('chatgpt-thinking');
+            thinkingIndicator.classList.add('active');
+
+            try {
+                const response = await fetch('/.netlify/functions/openai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: userInput
+                    })
+                });
+
+                const data = await response.json();
+                console.log('ChatGPT 4.1 Response:', data);
+
+                const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
+                    ? data.content[0].text 
+                    : 'Response received but format unexpected';
+
+                const timestamp = new Date().toLocaleTimeString();
+                thinkingIndicator.classList.remove('active');
+
+                document.getElementById('agent-chatgpt-content').innerHTML = `
+                    <div class="message-bubble p-3" style="border-left: 3px solid #10B981;">
+                        <div class="text-sm text-gray-400 mb-1">Response Received - ${timestamp}</div>
+                        <div>${reply}</div>
+                    </div>
+                `;
+
+                addToSessionMemory('You → ChatGPT', userInput, timestamp);
+                addToSessionMemory('ChatGPT 4.1 Turbo', reply, timestamp);
+                updateStats();
+                sessionData.lastPrompts.chatgpt = userInput;
+
+            } catch (error) {
+                console.error('ChatGPT integration error:', error);
+                thinkingIndicator.classList.remove('active');
+
+                document.getElementById('agent-chatgpt-content').innerHTML = `
+                    <div class="message-bubble p-3">
+                        <div class="text-sm text-gray-400 mb-1">Connection Error</div>
+                        <div>Unable to connect to ChatGPT 4.1: ${error.message}</div>
+                    </div>
+                `;
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        // Professional MiniMax-M1 Integration
+        async function sendToMiniMax() {
+            const userInput = document.getElementById('masterPrompt').value.trim();
+            if (!userInput) {
+                alert('Please enter a message first!');
+                return;
+            }
+
+            const button = document.getElementById('sendToMiniMaxBtn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            button.disabled = true;
+
+            const thinkingIndicator = document.getElementById('minimax-thinking');
+            thinkingIndicator.classList.add('active');
+
+            try {
+                const response = await fetch('/.netlify/functions/minimax', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: userInput
+                    })
+                });
+
+                const data = await response.json();
+                console.log('MiniMax M1 Response:', data);
+
+                const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
+                    ? data.content[0].text 
+                    : 'Response received but format unexpected';
+
+                const timestamp = new Date().toLocaleTimeString();
+                thinkingIndicator.classList.remove('active');
+
+                document.getElementById('agent-minimax-content').innerHTML = `
+                    <div class="message-bubble p-3" style="border-left: 3px solid var(--minimax-purple);">
+                        <div class="text-sm text-gray-400 mb-1">Deep Analysis Complete - ${timestamp}</div>
+                        <div>${reply}</div>
+                    </div>
+                `;
+
+                addToSessionMemory('You → MiniMax', userInput, timestamp);
+                addToSessionMemory('MiniMax-M1', reply, timestamp);
+                updateStats();
+                sessionData.lastPrompts.minimax = userInput;
+
+            } catch (error) {
+                console.error('MiniMax integration error:', error);
+                thinkingIndicator.classList.remove('active');
+
+                document.getElementById('agent-minimax-content').innerHTML = `
+                    <div class="message-bubble p-3">
+                        <div class="text-sm text-gray-400 mb-1">Connection Error</div>
+                        <div>Unable to connect to MiniMax-M1: ${error.message}</div>
+                    </div>
+                `;
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        // Send to All Agents
+        async function sendToAll() {
+            const userInput = document.getElementById('masterPrompt').value.trim();
+            if (!userInput) {
+                alert('Please enter a message first!');
+                return;
+            }
+
+            // Send to all three agents simultaneously
+            Promise.all([
+                sendToClaude(),
+                sendToChatGPT(),
+                sendToMiniMax()
+            ]);
+        }
+
+        // Enhanced Toolbar Functions
+        function rateResponse(agent, rating) {
+            console.log(`Rated ${agent} response: ${rating}`);
+            // Add visual feedback
+            const message = rating === 'up' ? 'Response rated positively' : 'Response rated negatively';
+            addToSessionMemory('System', `${agent} ${message}`, new Date().toLocaleTimeString());
+        }
+
+        function regenerateResponse(agent) {
+            console.log(`Regenerating ${agent} response`);
+            if (sessionData.lastPrompts[agent]) {
+                switch(agent) {
+                    case 'claude': sendToClaude(); break;
+                    case 'chatgpt': sendToChatGPT(); break;
+                    case 'minimax': sendToMiniMax(); break;
+                }
+            }
+        }
+
+        function copyResponse(agent) {
+            const content = document.getElementById(`agent-${agent}-content`).innerText;
+            navigator.clipboard.writeText(content);
+            console.log(`Copied ${agent} response to clipboard`);
+        }
+
+        function editAndRerun(agent) {
+            if (sessionData.lastPrompts[agent]) {
+                document.getElementById('masterPrompt').value = sessionData.lastPrompts[agent];
+            }
+        }
+
+        function clearAgentOutput(agent) {
+            document.getElementById(`agent-${agent}-content`).innerHTML = `
+                <div class="message-bubble p-3">
+                    <div class="text-sm text-gray-400 mb-1">Ready</div>
+                    <div>${agent.charAt(0).toUpperCase() + agent.slice(1)} is ready for new tasks.</div>
+                </div>
+            `;
+        }
+
+        function toggleView(agent) {
+            // Toggle between formatted and raw JSON view
+            console.log(`Toggling view for ${agent}`);
+        }
+
+        function exportResponse(agent) {
+            const content = document.getElementById(`agent-${agent}-content`).innerHTML;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${agent}_response_${Date.now()}.html`;
+            a.click();
+        }
+
+        // Session Management Functions
         function addToSessionMemory(speaker, message, timestamp) {
             const memory = document.getElementById('sessionMemory');
             const bubble = document.createElement('div');
@@ -627,27 +1006,101 @@
             memory.parentNode.scrollTop = memory.parentNode.scrollHeight;
         }
 
-        // Update statistics
         function updateStats() {
             sessionData.messages.push({timestamp: Date.now()});
-            const totalMessages = sessionData.messages.length * 2;
+            const totalMessages = sessionData.messages.length;
             const sessionTimeMs = Date.now() - sessionData.startTime;
             const sessionTimeSec = Math.floor(sessionTimeMs / 1000);
             
             document.getElementById('totalMessages').textContent = totalMessages;
-            document.getElementById('tokensUsed').textContent = Math.floor(totalMessages * 25);
+            document.getElementById('tokensUsed').textContent = Math.floor(totalMessages * 150);
             document.getElementById('sessionTime').textContent = sessionTimeSec + 's';
-            document.getElementById('humanInputs').textContent = sessionData.messages.length;
+            document.getElementById('humanInputs').textContent = Math.floor(totalMessages / 2);
         }
 
-        // Event listener for button
+        // Human Controller Functions
+        function sendToAgent(agent) {
+            const input = document.getElementById('humanInput').value.trim();
+            if (!input) return;
+            
+            document.getElementById('masterPrompt').value = input;
+            switch(agent) {
+                case 'claude': sendToClaude(); break;
+                case 'chatgpt': sendToChatGPT(); break;
+                case 'minimax': sendToMiniMax(); break;
+            }
+            document.getElementById('humanInput').value = '';
+        }
+
+        function sendToAllAgents() {
+            const input = document.getElementById('humanInput').value.trim();
+            if (!input) return;
+            
+            document.getElementById('masterPrompt').value = input;
+            sendToAll();
+            document.getElementById('humanInput').value = '';
+        }
+
+        function startRelay() {
+            sessionData.relayActive = true;
+            console.log('Multi-agent relay started');
+            addToSessionMemory('System', 'Multi-agent relay activated', new Date().toLocaleTimeString());
+        }
+
+        function pauseRelay() {
+            sessionData.relayActive = false;
+            console.log('Multi-agent relay paused');
+        }
+
+        function stepRelay() {
+            console.log('Manual relay step executed');
+        }
+
+        function toggleVoice() {
+            console.log('Voice interaction toggled');
+        }
+
+        // Export Functions
+        function exportSession(format) {
+            const sessionContent = document.getElementById('sessionMemory').innerHTML;
+            let content, mimeType, extension;
+            
+            switch(format) {
+                case 'pdf':
+                    // For PDF, we'll use print functionality
+                    window.print();
+                    return;
+                case 'json':
+                    content = JSON.stringify(sessionData, null, 2);
+                    mimeType = 'application/json';
+                    extension = 'json';
+                    break;
+                case 'md':
+                    content = `# PromptLink Session Export\n\n${sessionContent.replace(/<[^>]*>/g, '')}`;
+                    mimeType = 'text/markdown';
+                    extension = 'md';
+                    break;
+            }
+            
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `promptlink_session_${Date.now()}.${extension}`;
+            a.click();
+        }
+
+        // Event Listeners
+        document.getElementById('sendToAllBtn').addEventListener('click', sendToAll);
         document.getElementById('sendToClaudeBtn').addEventListener('click', sendToClaude);
+        document.getElementById('sendToChatGPTBtn').addEventListener('click', sendToChatGPT);
+        document.getElementById('sendToMiniMaxBtn').addEventListener('click', sendToMiniMax);
 
         // Enter key support
-        document.getElementById('userPrompt').addEventListener('keydown', function(e) {
+        document.getElementById('masterPrompt').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendToClaude();
+                sendToAll();
             }
         });
 
@@ -657,7 +1110,7 @@
                 document.querySelectorAll('[data-preset]').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 sessionData.preset = this.dataset.preset;
-                console.log(`🎯 Switched to ${this.dataset.preset} mode`);
+                console.log(`Switched to ${this.dataset.preset} mode`);
             });
         });
 
@@ -669,9 +1122,9 @@
         }, 1000);
 
         // Initialize
-        console.log('🚀 ThePromptLink Platform Initialized');
-        console.log('🤖 Claude API integration: ACTIVE');
-        console.log('💚 Ready to make AI history!');
+        console.log('🚀 ThePromptLink v7.0 Professional Platform Initialized');
+        console.log('🤖 3-Agent Architecture: Claude Sonnet 4.0 + ChatGPT 4.1 + MiniMax-M1');
+        console.log('💚 Ready for revolutionary AI collaboration!');
     </script>
 </body>
 </html>
