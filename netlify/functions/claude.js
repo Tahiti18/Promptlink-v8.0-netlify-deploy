@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   try {
@@ -10,32 +10,28 @@ exports.handler = async (event, context) => {
       }
     }
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1024,
+        model: 'anthropic/claude-3.5-sonnet',  // ✅ CLAUDE VIA OPENROUTER
         messages: [
-          {
-            role: "user",
-            content: message
-          }
-        ]
+          { role: 'user', content: message }
+        ],
+        max_tokens: 4000,
+        temperature: 0.7
       })
     });
 
-    // ✅ IMPROVED JSON PARSING WITH ERROR HANDLING
     let data;
     try {
       data = await response.json();
     } catch (jsonError) {
       const textResponse = await response.text();
-      console.log('Raw Claude response (non-JSON):', textResponse);
+      console.log('Raw OpenRouter Claude response (non-JSON):', textResponse);
       return {
         statusCode: 500,
         headers: {
@@ -44,15 +40,15 @@ exports.handler = async (event, context) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ 
-          error: `Claude returned non-JSON response: ${textResponse}` 
+          error: `OpenRouter returned non-JSON response: ${textResponse}` 
         })
       };
     }
 
-    console.log("Claude Sonnet 4.0 Response:", JSON.stringify(data, null, 2));
+    console.log('OpenRouter Claude Response:', JSON.stringify(data, null, 2));
 
-    if (!response.ok) {
-      console.error("Claude API Error:", JSON.stringify(data, null, 2));
+    if (!response.ok || data.error) {
+      console.error('OpenRouter Claude API Error:', JSON.stringify(data, null, 2));
       return {
         statusCode: response.status,
         headers: {
@@ -64,28 +60,20 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ IMPROVED RESPONSE PARSING WITH FALLBACKS
     let finalText;
-    if (data?.content?.[0]?.text) {
-      finalText = data.content[0].text;
-      console.log('SUCCESS: Using content[0].text field');
-    } else if (data?.content?.[0]?.content) {
-      finalText = data.content[0].content;
-      console.log('SUCCESS: Using content[0].content field');
-    } else if (data?.message) {
-      finalText = data.message;
-      console.log('SUCCESS: Using message field');
+    if (data?.choices?.[0]?.message?.content && data.choices[0].message.content.trim() !== "") {
+      finalText = data.choices[0].message.content;
+      console.log('SUCCESS: Using content field');
     } else {
       finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
       console.log('DEBUG: Unknown format detected');
     }
     
-    // ✅ FORMAT TEXT WITH PROPER LINE BREAKS
     finalText = finalText
-      .replace(/\n\n/g, '</p><p>')  // Double line breaks = new paragraphs
-      .replace(/\n/g, '<br>')       // Single line breaks = <br>
-      .replace(/^/, '<p>')          // Start with paragraph
-      .replace(/$/, '</p>');        // End with paragraph
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
 
     return {
       statusCode: 200,
@@ -102,8 +90,8 @@ exports.handler = async (event, context) => {
       })
     };
 
-  } catch (err) {
-    console.error("Claude Function Error:", err);
+  } catch (error) {
+    console.error('Claude via OpenRouter Function Error:', error);
     return {
       statusCode: 500,
       headers: {
@@ -111,7 +99,7 @@ exports.handler = async (event, context) => {
         "Access-Control-Allow-Headers": "Content-Type",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ error: err.toString() })
+      body: JSON.stringify({ error: error.toString() })
     };
   }
 };
