@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+Copyconst fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   try {
@@ -48,7 +48,27 @@ exports.handler = async (event, context) => {
       };
     }
 
-    let finalText = data?.choices?.[0]?.message?.content || "No response received from MiniMax";
+    // ✅ ROBUST RESPONSE PARSING - Handles multiple formats
+    let finalText;
+    if (data?.choices?.[0]?.message?.content) {
+      // Standard OpenAI format
+      finalText = data.choices[0].message.content;
+    } else if (data?.content?.[0]?.text) {
+      // Anthropic-style format
+      finalText = data.content[0].text;
+    } else if (data?.message?.content) {
+      // Alternative format
+      finalText = data.message.content;
+    } else if (data?.output) {
+      // Direct output format
+      finalText = data.output;
+    } else if (data?.text) {
+      // Simple text format
+      finalText = data.text;
+    } else {
+      // Fallback with debug info
+      finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
+    }
     
     finalText = finalText
       .replace(/\n\n/g, '</p><p>')
