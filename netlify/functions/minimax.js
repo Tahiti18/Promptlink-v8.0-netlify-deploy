@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'minimax/abab6.5s-chat',
+        model: 'minimax/minimax-m1',  // ✅ CORRECTED MODEL NAME
         messages: [
           { role: 'user', content: message }
         ],
@@ -42,41 +42,22 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ FLEXIBLE RESPONSE PARSING - Try multiple possible formats
-    let finalText = '';
-    
+    // ✅ PARSE OPENROUTER RESPONSE FORMAT
+    let finalText;
     if (data?.choices?.[0]?.message?.content) {
-      // Standard OpenAI/OpenRouter format
+      // Standard OpenRouter/OpenAI format
       finalText = data.choices[0].message.content;
-      console.log('SUCCESS: Standard format detected');
-    } else if (data?.message) {
-      // Alternative format 1
-      finalText = data.message;
-      console.log('SUCCESS: Alternative format 1 detected');
-    } else if (data?.text) {
-      // Alternative format 2
-      finalText = data.text;
-      console.log('SUCCESS: Alternative format 2 detected');
-    } else if (data?.content) {
-      // Alternative format 3
-      finalText = data.content;
-      console.log('SUCCESS: Alternative format 3 detected');
-    } else if (typeof data === 'string') {
-      // Direct string response
-      finalText = data;
-      console.log('SUCCESS: Direct string format detected');
     } else {
-      // Debug: Show exact structure received
-      finalText = `DEBUG - MiniMax response structure: ${JSON.stringify(data, null, 2)}`;
-      console.log('DEBUG: Unknown format, showing structure');
+      // Fallback with debug info
+      finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
     }
     
     // ✅ FORMAT TEXT WITH PROPER LINE BREAKS (matching Claude/ChatGPT)
     finalText = finalText
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>')
-      .replace(/^/, '<p>')
-      .replace(/$/, '</p>');
+      .replace(/\n\n/g, '</p><p>')  // Double line breaks = new paragraphs
+      .replace(/\n/g, '<br>')       // Single line breaks = <br>
+      .replace(/^/, '<p>')          // Start with paragraph
+      .replace(/$/, '</p>');        // End with paragraph
 
     return {
       statusCode: 200,
