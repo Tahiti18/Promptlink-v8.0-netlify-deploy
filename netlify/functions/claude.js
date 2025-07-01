@@ -29,7 +29,26 @@ exports.handler = async (event, context) => {
       })
     });
 
-    const data = await response.json();
+    // ✅ IMPROVED JSON PARSING WITH ERROR HANDLING
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      const textResponse = await response.text();
+      console.log('Raw Claude response (non-JSON):', textResponse);
+      return {
+        statusCode: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+          error: `Claude returned non-JSON response: ${textResponse}` 
+        })
+      };
+    }
+
     console.log("Claude Sonnet 4.0 Response:", JSON.stringify(data, null, 2));
 
     if (!response.ok) {
@@ -45,10 +64,23 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // ✅ FORMAT TEXT WITH PROPER LINE BREAKS
-    let finalText = data?.content?.[0]?.text || "No response received";
+    // ✅ IMPROVED RESPONSE PARSING WITH FALLBACKS
+    let finalText;
+    if (data?.content?.[0]?.text) {
+      finalText = data.content[0].text;
+      console.log('SUCCESS: Using content[0].text field');
+    } else if (data?.content?.[0]?.content) {
+      finalText = data.content[0].content;
+      console.log('SUCCESS: Using content[0].content field');
+    } else if (data?.message) {
+      finalText = data.message;
+      console.log('SUCCESS: Using message field');
+    } else {
+      finalText = `Response received - investigating format: ${JSON.stringify(data, null, 2)}`;
+      console.log('DEBUG: Unknown format detected');
+    }
     
-    // Add proper formatting for better display
+    // ✅ FORMAT TEXT WITH PROPER LINE BREAKS
     finalText = finalText
       .replace(/\n\n/g, '</p><p>')  // Double line breaks = new paragraphs
       .replace(/\n/g, '<br>')       // Single line breaks = <br>
