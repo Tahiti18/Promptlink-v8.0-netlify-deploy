@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThePromptLink - Professional Multi-Agent AI Platform v7.0</title>
-    <meta name="description" content="Advanced multi-agent AI communication platform with autonomous relay logic and professional workflow management">
-    <meta property="og:title" content="ThePromptLink - Professional Multi-Agent AI Platform v7.0">
-    <meta property="og:description" content="Professional multi-agent AI coordination platform with Claude, ChatGPT, and Llama">
+    <title>ThePromptLink v8.0 - Revolutionary 5-Model Dropdown Platform</title>
+    <meta name="description" content="Revolutionary multi-agent AI communication platform with 5-model dropdown orchestration system">
+    <meta property="og:title" content="ThePromptLink v8.0 - Revolutionary 5-Model Dropdown Platform">
+    <meta property="og:description" content="World's first infinitely configurable AI orchestration platform with Claude, ChatGPT, Llama, Mistral, and Gemini">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
@@ -20,6 +20,8 @@
             --fog-white: #e6e6e9;
             --steel-blue: #59698d;
             --llama-purple: #8B5CF6;
+            --mistral-orange: #FF6B35;
+            --gemini-blue: #4285F4;
         }
 
         body {
@@ -28,6 +30,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         .sticky-header {
@@ -99,28 +102,7 @@
         .agent-panel {
             background: var(--graphite);
             border-left: 3px solid var(--fluorescent-green);
-        }
-
-        .agent-panel-chatgpt {
-            background: var(--graphite);
-            border-left: 3px solid #10B981;
-        }
-
-        .agent-panel-llama {
-            background: var(--graphite);
-            border-left: 3px solid var(--llama-purple);
-        }
-
-        .agent-icon {
-            color: var(--fluorescent-green);
-        }
-
-        .agent-icon-chatgpt {
-            color: #10B981;
-        }
-
-        .agent-icon-llama {
-            color: var(--llama-purple);
+            min-height: 200px;
         }
 
         .message-bubble {
@@ -163,12 +145,6 @@
         .export-btn:hover {
             background: var(--steel-blue);
             border-color: var(--fluorescent-green);
-        }
-
-        .role-selector {
-            background: var(--graphite);
-            border: 1px solid var(--steel-blue);
-            color: var(--fog-white);
         }
 
         .session-script {
@@ -245,13 +221,46 @@
             border-color: var(--fluorescent-green);
         }
 
-        .context-indicator {
-            background: var(--llama-purple);
-            color: white;
-            padding: 2px 6px;
+        .model-selector {
+            background: var(--graphite);
+            border: 1px solid var(--fluorescent-green);
+            color: var(--fog-white);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-left: 8px;
+            min-width: 300px;
+        }
+
+        .model-selector:focus {
+            outline: none;
+            border-color: var(--fluorescent-green);
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+        }
+
+        .agent-status {
+            background: var(--graphite);
+            padding: 4px 12px;
             border-radius: 12px;
-            font-size: 0.6rem;
+            font-size: 0.75rem;
+            color: var(--fluorescent-green);
             font-weight: bold;
+        }
+
+        .clear-all-btn {
+            background: var(--mistral-orange);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 12px;
+        }
+
+        .clear-all-btn:hover {
+            background: #FF8C00;
+            transform: translateY(-1px);
         }
 
         @media print {
@@ -299,26 +308,31 @@
     <div class="main-container">
         <!-- Master Prompt Section -->
         <div class="claude-section">
-            <h3 class="text-lg font-semibold mb-3 fluorescent-icon">🎯 Multi-Agent Command Center</h3>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-semibold fluorescent-icon">🎯 Revolutionary 5-Model Command Center</h3>
+                <button onclick="clearAllAgents()" class="clear-all-btn">
+                    <i class="fas fa-refresh mr-2"></i>Clear All Agents
+                </button>
+            </div>
             <textarea 
                 id="masterPrompt"
                 class="w-full p-4 rounded-lg text-white resize-none mb-3"
                 style="background: var(--graphite); border: 1px solid var(--fluorescent-green);"
                 rows="3"
-                placeholder="Enter your prompt for multi-agent collaboration..."></textarea>
+                placeholder="Enter your prompt for infinite AI orchestration possibilities..."></textarea>
             
             <div class="flex gap-3 flex-wrap">
                 <button id="sendToAllBtn" class="btn-primary px-6 py-2 rounded-lg font-medium">
                     <i class="fas fa-broadcast-tower mr-2"></i>Send to All Agents
                 </button>
-                <button id="sendToClaudeBtn" class="btn-secondary px-4 py-2 rounded-lg">
-                    <i class="fas fa-robot mr-2"></i>Claude Only
+                <button id="sendToAgentABtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-robot mr-2"></i>Agent A Only
                 </button>
-                <button id="sendToChatGPTBtn" class="btn-secondary px-4 py-2 rounded-lg">
-                    <i class="fas fa-comments mr-2"></i>ChatGPT Only
+                <button id="sendToAgentBBtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-comments mr-2"></i>Agent B Only
                 </button>
-                <button id="sendToLlamaBtn" class="btn-secondary px-4 py-2 rounded-lg">
-                    <i class="fas fa-brain mr-2"></i>Llama Only
+                <button id="sendToAgentCBtn" class="btn-secondary px-4 py-2 rounded-lg">
+                    <i class="fas fa-brain mr-2"></i>Agent C Only
                 </button>
                 <button onclick="document.getElementById('masterPrompt').value=''" class="btn-secondary px-4 py-2 rounded-lg">
                     <i class="fas fa-eraser mr-2"></i>Clear
@@ -328,212 +342,208 @@
 
         <!-- Agent Panels -->
         <div class="grid-container">
-            <!-- Agent A - Claude -->
+            <!-- Agent A - Dynamic Model Selector -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-robot mr-2 agent-icon"></i>
-                        Agent A - Claude Sonnet 4.0
+                        <i class="fas fa-robot mr-2" id="agentA-icon" style="color: var(--fluorescent-green);"></i>
+                        Agent A - 
+                        <select id="agentA-selector" class="model-selector" onchange="updateAgent('A')">
+                            <option value="claude">Claude 3.5 Sonnet - Creative Strategist</option>
+                            <option value="chatgpt">ChatGPT 4 Turbo - Versatile Analyzer</option>
+                            <option value="llama">Llama 3.3 - Meta Powerhouse</option>
+                            <option value="mistral">Mistral Large 2407 - European Reasoning Expert</option>
+                            <option value="gemini">Gemini 2.0 Flash - Google Speed Demon</option>
+                        </select>
                     </h3>
-                    <select class="role-selector px-3 py-1 rounded text-sm">
-                        <option>Creative Strategist</option>
-                        <option>Critic</option>
-                        <option>Builder</option>
-                        <option>Visionary</option>
-                    </select>
+                    <div class="agent-status" id="agentA-status">Creative Strategist Ready</div>
                 </div>
 
                 <!-- Enhanced Toolbar -->
                 <div class="agent-toolbar">
-                    <button class="toolbar-btn" onclick="rateResponse('claude', 'up')">
+                    <button class="toolbar-btn" onclick="rateResponse('A', 'up')">
                         <i class="fas fa-thumbs-up"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="rateResponse('claude', 'down')">
+                    <button class="toolbar-btn" onclick="rateResponse('A', 'down')">
                         <i class="fas fa-thumbs-down"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="regenerateResponse('claude')">
+                    <button class="toolbar-btn" onclick="regenerateResponse('A')">
                         <i class="fas fa-redo"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="copyResponse('claude')">
+                    <button class="toolbar-btn" onclick="copyResponse('A')">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="editAndRerun('claude')">
+                    <button class="toolbar-btn" onclick="editAndRerun('A')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="clearAgentOutput('claude')">
+                    <button class="toolbar-btn" onclick="clearAgentOutput('A')">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="toggleView('claude')">
-                        <i class="fas fa-code"></i>
-                    </button>
-                    <button class="toolbar-btn" onclick="exportResponse('claude')">
+                    <button class="toolbar-btn" onclick="exportResponse('A')">
                         <i class="fas fa-download"></i>
                     </button>
                 </div>
                 
-                <div class="agent-panel p-4 rounded-lg mb-4" style="min-height: 200px;">
-                    <div id="agent-claude-content">
+                <div class="agent-panel p-4 rounded-lg mb-4" id="agentA-panel">
+                    <div id="agentA-content">
                         <div class="message-bubble p-3">
                             <div class="text-sm text-gray-400 mb-1">Ready</div>
-                            <div>Claude Sonnet 4.0 is ready for strategic collaboration.</div>
+                            <div>Claude 3.5 Sonnet is ready for creative strategic collaboration.</div>
                         </div>
                     </div>
-                    <div class="thinking-indicator text-center py-4" id="claude-thinking">
+                    <div class="thinking-indicator text-center py-4" id="agentA-thinking">
                         <div class="inline-flex space-x-1">
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green);"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green); animation-delay: 0.3s;"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--fluorescent-green); animation-delay: 0.6s;"></div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-2">Claude is processing...</div>
+                        <div class="text-sm text-gray-400 mt-2" id="agentA-thinking-text">Claude is processing...</div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('claude')">
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('A')">
                         <i class="fas fa-edit mr-2 fluorescent-icon"></i>Replace
                     </button>
-                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToClaude()">
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToAgent('A')">
                         <i class="fas fa-arrow-right mr-2"></i>Send
                     </button>
                 </div>
             </div>
 
-            <!-- Agent B - ChatGPT -->
+            <!-- Agent B - Dynamic Model Selector -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-comments mr-2 agent-icon-chatgpt"></i>
-                        Agent B - ChatGPT 4.1 Turbo
+                        <i class="fas fa-comments mr-2" id="agentB-icon" style="color: #10B981;"></i>
+                        Agent B - 
+                        <select id="agentB-selector" class="model-selector" onchange="updateAgent('B')">
+                            <option value="chatgpt">ChatGPT 4 Turbo - Versatile Analyzer</option>
+                            <option value="claude">Claude 3.5 Sonnet - Creative Strategist</option>
+                            <option value="llama">Llama 3.3 - Meta Powerhouse</option>
+                            <option value="mistral">Mistral Large 2407 - European Reasoning Expert</option>
+                            <option value="gemini">Gemini 2.0 Flash - Google Speed Demon</option>
+                        </select>
                     </h3>
-                    <select class="role-selector px-3 py-1 rounded text-sm">
-                        <option>Versatile Analyzer</option>
-                        <option>Devil's Advocate</option>
-                        <option>Creator</option>
-                        <option>Challenger</option>
-                    </select>
+                    <div class="agent-status" id="agentB-status">Versatile Analyzer Ready</div>
                 </div>
 
                 <!-- Enhanced Toolbar -->
                 <div class="agent-toolbar">
-                    <button class="toolbar-btn" onclick="rateResponse('chatgpt', 'up')">
+                    <button class="toolbar-btn" onclick="rateResponse('B', 'up')">
                         <i class="fas fa-thumbs-up"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="rateResponse('chatgpt', 'down')">
+                    <button class="toolbar-btn" onclick="rateResponse('B', 'down')">
                         <i class="fas fa-thumbs-down"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="regenerateResponse('chatgpt')">
+                    <button class="toolbar-btn" onclick="regenerateResponse('B')">
                         <i class="fas fa-redo"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="copyResponse('chatgpt')">
+                    <button class="toolbar-btn" onclick="copyResponse('B')">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="editAndRerun('chatgpt')">
+                    <button class="toolbar-btn" onclick="editAndRerun('B')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="clearAgentOutput('chatgpt')">
+                    <button class="toolbar-btn" onclick="clearAgentOutput('B')">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="toggleView('chatgpt')">
-                        <i class="fas fa-code"></i>
-                    </button>
-                    <button class="toolbar-btn" onclick="exportResponse('chatgpt')">
+                    <button class="toolbar-btn" onclick="exportResponse('B')">
                         <i class="fas fa-download"></i>
                     </button>
                 </div>
                 
-                <div class="agent-panel-chatgpt p-4 rounded-lg mb-4" style="min-height: 200px;">
-                    <div id="agent-chatgpt-content">
+                <div class="agent-panel p-4 rounded-lg mb-4" id="agentB-panel" style="border-left: 3px solid #10B981;">
+                    <div id="agentB-content">
                         <div class="message-bubble p-3">
                             <div class="text-sm text-gray-400 mb-1">Ready</div>
-                            <div>ChatGPT 4.1 Turbo is ready for versatile analysis and collaboration.</div>
+                            <div>ChatGPT 4 Turbo is ready for versatile analysis and collaboration.</div>
                         </div>
                     </div>
-                    <div class="thinking-indicator text-center py-4" id="chatgpt-thinking">
+                    <div class="thinking-indicator text-center py-4" id="agentB-thinking">
                         <div class="inline-flex space-x-1">
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: #10B981;"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: #10B981; animation-delay: 0.3s;"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: #10B981; animation-delay: 0.6s;"></div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-2">ChatGPT is analyzing...</div>
+                        <div class="text-sm text-gray-400 mt-2" id="agentB-thinking-text">ChatGPT is analyzing...</div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('chatgpt')">
-                        <i class="fas fa-edit mr-2 agent-icon-chatgpt"></i>Replace
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('B')">
+                        <i class="fas fa-edit mr-2" style="color: #10B981;"></i>Replace
                     </button>
-                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToChatGPT()">
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToAgent('B')">
                         <i class="fas fa-arrow-right mr-2"></i>Send
                     </button>
                 </div>
             </div>
 
-            <!-- Agent C - Llama -->
+            <!-- Agent C - Dynamic Model Selector -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-brain mr-2 agent-icon-llama"></i>
-                        Agent C - Llama 3.3
-                        <span class="context-indicator ml-2">70B PARAMS</span>
+                        <i class="fas fa-brain mr-2" id="agentC-icon" style="color: var(--llama-purple);"></i>
+                        Agent C - 
+                        <select id="agentC-selector" class="model-selector" onchange="updateAgent('C')">
+                            <option value="llama">Llama 3.3 - Meta Powerhouse</option>
+                            <option value="claude">Claude 3.5 Sonnet - Creative Strategist</option>
+                            <option value="chatgpt">ChatGPT 4 Turbo - Versatile Analyzer</option>
+                            <option value="mistral">Mistral Large 2407 - European Reasoning Expert</option>
+                            <option value="gemini">Gemini 2.0 Flash - Google Speed Demon</option>
+                        </select>
                     </h3>
-                    <select class="role-selector px-3 py-1 rounded text-sm">
-                        <option>Meta Powerhouse</option>
-                        <option>Reasoning Expert</option>
-                        <option>Document Analyst</option>
-                        <option>Complex Problem Solver</option>
-                    </select>
+                    <div class="agent-status" id="agentC-status">Meta Powerhouse Ready</div>
                 </div>
 
                 <!-- Enhanced Toolbar -->
                 <div class="agent-toolbar">
-                    <button class="toolbar-btn" onclick="rateResponse('llama', 'up')">
+                    <button class="toolbar-btn" onclick="rateResponse('C', 'up')">
                         <i class="fas fa-thumbs-up"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="rateResponse('llama', 'down')">
+                    <button class="toolbar-btn" onclick="rateResponse('C', 'down')">
                         <i class="fas fa-thumbs-down"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="regenerateResponse('llama')">
+                    <button class="toolbar-btn" onclick="regenerateResponse('C')">
                         <i class="fas fa-redo"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="copyResponse('llama')">
+                    <button class="toolbar-btn" onclick="copyResponse('C')">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="editAndRerun('llama')">
+                    <button class="toolbar-btn" onclick="editAndRerun('C')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="clearAgentOutput('llama')">
+                    <button class="toolbar-btn" onclick="clearAgentOutput('C')">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button class="toolbar-btn" onclick="toggleView('llama')">
-                        <i class="fas fa-code"></i>
-                    </button>
-                    <button class="toolbar-btn" onclick="exportResponse('llama')">
+                    <button class="toolbar-btn" onclick="exportResponse('C')">
                         <i class="fas fa-download"></i>
                     </button>
                 </div>
                 
-                <div class="agent-panel-llama p-4 rounded-lg mb-4" style="min-height: 200px;">
-                    <div id="agent-llama-content">
+                <div class="agent-panel p-4 rounded-lg mb-4" id="agentC-panel" style="border-left: 3px solid var(--llama-purple);">
+                    <div id="agentC-content">
                         <div class="message-bubble p-3">
                             <div class="text-sm text-gray-400 mb-1">Ready</div>
-                            <div>Llama 3.3 70B is ready for meta powerhouse reasoning.</div>
+                            <div>Llama 3.3 is ready for meta powerhouse reasoning.</div>
                         </div>
                     </div>
-                    <div class="thinking-indicator text-center py-4" id="llama-thinking">
+                    <div class="thinking-indicator text-center py-4" id="agentC-thinking">
                         <div class="inline-flex space-x-1">
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--llama-purple);"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--llama-purple); animation-delay: 0.3s;"></div>
                             <div class="w-2 h-2 rounded-full pulse-dot" style="background-color: var(--llama-purple); animation-delay: 0.6s;"></div>
                         </div>
-                        <div class="text-sm text-gray-400 mt-2">Llama is processing...</div>
+                        <div class="text-sm text-gray-400 mt-2" id="agentC-thinking-text">Llama is processing...</div>
                     </div>
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('llama')">
-                        <i class="fas fa-edit mr-2 agent-icon-llama"></i>Replace
+                    <button class="btn-secondary px-3 py-2 rounded text-sm flex-1" onclick="replaceResponse('C')">
+                        <i class="fas fa-edit mr-2" style="color: var(--llama-purple);"></i>Replace
                     </button>
-                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToLlama()">
+                    <button class="btn-primary px-3 py-2 rounded text-sm" onclick="sendToAgent('C')">
                         <i class="fas fa-arrow-right mr-2"></i>Send
                     </button>
                 </div>
@@ -575,16 +585,16 @@
             
             <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3">
-                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('claude')">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgentFromController('A')">
                     <i class="fas fa-arrow-left mr-2"></i>To Agent A
                 </button>
-                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('chatgpt')">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgentFromController('B')">
                     <i class="fas fa-arrow-right mr-2"></i>To Agent B
                 </button>
-                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgent('llama')">
+                <button class="btn-primary px-4 py-2 rounded-lg" onclick="sendToAgentFromController('C')">
                     <i class="fas fa-arrow-up mr-2"></i>To Agent C
                 </button>
-                <button class="btn-secondary px-4 py-2 rounded-lg" onclick="sendToAllAgents()">
+                <button class="btn-secondary px-4 py-2 rounded-lg" onclick="sendToAllFromController()">
                     <i class="fas fa-arrows-alt-h mr-2"></i>To All
                 </button>
             </div>
@@ -617,8 +627,8 @@
                             <span class="text-sm font-medium fluorescent-icon">System</span>
                             <span class="text-xs text-gray-400">Ready</span>
                         </div>
-                        <div class="text-sm">Multi-agent platform initialized. All 3 agents ready for collaboration.</div>
-                        <div class="text-xs text-gray-500 mt-2">Status: Online</div>
+                        <div class="text-sm">Revolutionary 5-model platform initialized. Infinite AI combinations ready!</div>
+                        <div class="text-xs text-gray-500 mt-2">Status: Online | Possibilities: 125 combinations</div>
                     </div>
                 </div>
             </div>
@@ -643,12 +653,12 @@
                 </details>
                 
                 <details class="session-script p-4">
-                    <summary class="cursor-pointer font-medium text-sm mb-2">Problem-Solving Framework</summary>
+                    <summary class="cursor-pointer font-medium text-sm mb-2">5-Model Orchestration Framework</summary>
                     <div class="text-sm text-gray-300 space-y-2">
-                        <div>1. Problem Definition: Clarify the core issue</div>
-                        <div>2. Root Cause Analysis: Identify underlying factors</div>
-                       <div>3. Solution Generation: Brainstorm potential approaches</div>
-                        <div>4. Evaluation: Assess feasibility and impact</div>
+                        <div>1. Model Selection: Choose optimal AI combination for task</div>
+                        <div>2. Role Assignment: Assign specific cognitive archetypes</div>
+                        <div>3. Collaboration: Enable cross-model dialogue and synthesis</div>
+                        <div>4. Evaluation: Assess multi-model output quality</div>
                     </div>
                 </details>
 
@@ -664,9 +674,14 @@
             </div>
         </div>
 
-        Session Statistics
+        <!-- Session Statistics -->
+        <div class="glass-panel p-6 mb-6">
+            <h3 class="text-lg font-semibold mb-4 flex items-center">
+                <i class="fas fa-chart-line mr-2 fluorescent-icon"></i>
+                Session Statistics
             </h3>
-<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold fluorescent-icon" id="totalMessages">0</div>
                     <div class="text-sm text-gray-400">Total Messages</div>
@@ -687,6 +702,10 @@
                     <div class="text-2xl font-bold" style="color: var(--llama-purple);" id="activeAgents">3</div>
                     <div class="text-sm text-gray-400">Active Agents</div>
                 </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold" style="color: var(--mistral-orange);" id="totalCombinations">125</div>
+                    <div class="text-sm text-gray-400">Possible Combinations</div>
+                </div>
             </div>
         </div>
 
@@ -695,21 +714,65 @@
             <div class="flex items-center justify-center space-x-4 mb-4">
                 <span>ThePromptLink.com</span>
                 <span>•</span>
-                <span>Professional Multi-Agent AI Platform</span>
+                <span>Revolutionary 5-Model AI Platform</span>
                 <span>•</span>
-                <span>Version 7.0 - 3-Agent Ready!</span>
+                <span>Version 8.0 - Infinite Combinations!</span>
             </div>
-            <div>Professional AI coordination for strategic workflows • Claude Sonnet 4.0 • ChatGPT 4.1 Turbo • Llama 3.3 70B</div>
+            <div>World's First Infinitely Configurable AI Orchestration Platform • Claude • ChatGPT • Llama • Mistral • Gemini</div>
         </footer>
     </div>
 
     <script>
+        // 🚀 REVOLUTIONARY 5-MODEL ORCHESTRATION SYSTEM
+        let agentConfigs = {
+            claude: {
+                name: "Claude 3.5 Sonnet",
+                role: "Creative Strategist", 
+                endpoint: "claude",
+                icon: "fas fa-robot",
+                color: "var(--fluorescent-green)",
+                thinkingText: "Claude is strategizing..."
+            },
+            chatgpt: {
+                name: "ChatGPT 4 Turbo",
+                role: "Versatile Analyzer",
+                endpoint: "openai", 
+                icon: "fas fa-comments",
+                color: "#10B981",
+                thinkingText: "ChatGPT is analyzing..."
+            },
+            llama: {
+                name: "Llama 3.3",
+                role: "Meta Powerhouse",
+                endpoint: "llama",
+                icon: "fas fa-brain", 
+                color: "var(--llama-purple)",
+                thinkingText: "Llama is processing..."
+            },
+            mistral: {
+                name: "Mistral Large 2407",
+                role: "European Reasoning Expert",
+                endpoint: "mistral",
+                icon: "fas fa-chess",
+                color: "var(--mistral-orange)",
+                thinkingText: "Mistral is reasoning..."
+            },
+            gemini: {
+                name: "Gemini 2.0 Flash", 
+                role: "Google Speed Demon",
+                endpoint: "gemini",
+                icon: "fas fa-bolt",
+                color: "var(--gemini-blue)", 
+                thinkingText: "Gemini is lightning-thinking..."
+            }
+        };
+
         let sessionData = {
             messages: [],
             agents: {
-                claude: { role: 'Creative Strategist', active: true, tokens: 0 },
-                chatgpt: { role: 'Versatile Analyzer', active: true, tokens: 0 },
-                llama: { role: 'Meta Powerhouse', active: true, tokens: 0 }
+                A: { model: 'claude', role: 'Creative Strategist', active: true, tokens: 0 },
+                B: { model: 'chatgpt', role: 'Versatile Analyzer', active: true, tokens: 0 },
+                C: { model: 'llama', role: 'Meta Powerhouse', active: true, tokens: 0 }
             },
             preset: 'debate',
             relayActive: false,
@@ -718,23 +781,78 @@
             lastPrompts: {}
         };
 
-        async function sendToClaude() {
+        // 🎯 UPDATE AGENT WHEN DROPDOWN CHANGES
+        function updateAgent(agent) {
+            const selector = document.getElementById(`agent${agent}-selector`);
+            const selectedModel = selector.value;
+            const config = agentConfigs[selectedModel];
+            
+            // Update icon and color
+            const icon = document.getElementById(`agent${agent}-icon`);
+            icon.className = `${config.icon} mr-2`;
+            icon.style.color = config.color;
+            
+            // Update status display
+            const status = document.getElementById(`agent${agent}-status`);
+            status.textContent = `${config.role} Ready`;
+            
+            // Update panel border color
+            const panel = document.getElementById(`agent${agent}-panel`);
+            panel.style.borderLeft = `3px solid ${config.color}`;
+            
+            // Update ready message in agent panel
+            document.getElementById(`agent${agent}-content`).innerHTML = `
+                <div class="message-bubble p-3">
+                    <div class="text-sm text-gray-400 mb-1">Ready</div>
+                    <div>${config.name} is ready for ${config.role.toLowerCase()} collaboration.</div>
+                </div>
+            `;
+            
+            // Update thinking indicator text and color
+            const thinkingDiv = document.getElementById(`agent${agent}-thinking`);
+            const thinkingText = document.getElementById(`agent${agent}-thinking-text`);
+            if (thinkingText) {
+                thinkingText.textContent = config.thinkingText;
+            }
+            
+            // Update thinking dots color
+            const dots = thinkingDiv.querySelectorAll('.pulse-dot');
+            dots.forEach(dot => {
+                dot.style.backgroundColor = config.color;
+            });
+            
+            // Update session data
+            sessionData.agents[agent] = {
+                model: selectedModel,
+                role: config.role,
+                active: true,
+                tokens: 0
+            };
+            
+            console.log(`🔄 Agent ${agent} switched to: ${config.name} (${config.role})`);
+        }
+
+        // 🚀 DYNAMIC SEND FUNCTION FOR ANY AGENT
+        async function sendToAgent(agent) {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
                 alert('Please enter a message first!');
                 return;
             }
 
-            const button = document.getElementById('sendToClaudeBtn');
+            const selectedModel = sessionData.agents[agent].model;
+            const config = agentConfigs[selectedModel];
+            
+            const button = document.querySelector(`button[onclick="sendToAgent('${agent}')"]`);
             const originalText = button.innerHTML;
             button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
             button.disabled = true;
 
-            const thinkingIndicator = document.getElementById('claude-thinking');
+            const thinkingIndicator = document.getElementById(`agent${agent}-thinking`);
             thinkingIndicator.classList.add('active');
 
             try {
-                const response = await fetch('/.netlify/functions/claude', {
+                const response = await fetch(`/.netlify/functions/${config.endpoint}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -745,7 +863,7 @@
                 });
 
                 const data = await response.json();
-                console.log('Claude Sonnet 4.0 Response:', data);
+                console.log(`${config.name} Response:`, data);
 
                 const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
                     ? data.content[0].text 
@@ -754,26 +872,26 @@
                 const timestamp = new Date().toLocaleTimeString();
                 thinkingIndicator.classList.remove('active');
 
-                document.getElementById('agent-claude-content').innerHTML = `
-                    <div class="message-bubble p-3" style="border-left: 3px solid var(--fluorescent-green);">
-                        <div class="text-sm text-gray-400 mb-1">Response Received - ${timestamp}</div>
+                document.getElementById(`agent${agent}-content`).innerHTML = `
+                    <div class="message-bubble p-3" style="border-left: 3px solid ${config.color};">
+                        <div class="text-sm text-gray-400 mb-1">${config.role} Response - ${timestamp}</div>
                         <div>${reply}</div>
                     </div>
                 `;
 
-                addToSessionMemory('You → Claude', userInput, timestamp);
-                addToSessionMemory('Claude Sonnet 4.0', reply, timestamp);
+                addToSessionMemory(`You → ${config.name}`, userInput, timestamp);
+                addToSessionMemory(config.name, reply, timestamp);
                 updateStats();
-                sessionData.lastPrompts.claude = userInput;
+                sessionData.lastPrompts[agent] = userInput;
 
             } catch (error) {
-                console.error('Claude integration error:', error);
+                console.error(`${config.name} integration error:`, error);
                 thinkingIndicator.classList.remove('active');
 
-                document.getElementById('agent-claude-content').innerHTML = `
+                document.getElementById(`agent${agent}-content`).innerHTML = `
                     <div class="message-bubble p-3">
                         <div class="text-sm text-gray-400 mb-1">Connection Error</div>
-                        <div>Unable to connect to Claude Sonnet 4.0: ${error.message}</div>
+                        <div>Unable to connect to ${config.name}: ${error.message}</div>
                     </div>
                 `;
             } finally {
@@ -782,164 +900,73 @@
             }
         }
 
-        async function sendToChatGPT() {
+        // 🎯 SEND TO ALL AGENTS
+        async function sendToAllAgents() {
             const userInput = document.getElementById('masterPrompt').value.trim();
             if (!userInput) {
                 alert('Please enter a message first!');
                 return;
             }
+            
+            // Send to all agents simultaneously
+            Promise.all([
+                sendToAgent('A'),
+                sendToAgent('B'), 
+                sendToAgent('C')
+            ]);
+        }
 
-            const button = document.getElementById('sendToChatGPTBtn');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-            button.disabled = true;
-
-            const thinkingIndicator = document.getElementById('chatgpt-thinking');
-            thinkingIndicator.classList.add('active');
-
-            try {
-                const response = await fetch('/.netlify/functions/openai', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: userInput
-                    })
-                });
-
-                const data = await response.json();
-                console.log('ChatGPT 4.1 Response:', data);
-
-                const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
-                    ? data.content[0].text 
-                    : 'Response received but format unexpected';
-
-                const timestamp = new Date().toLocaleTimeString();
-                thinkingIndicator.classList.remove('active');
-
-                document.getElementById('agent-chatgpt-content').innerHTML = `
-                    <div class="message-bubble p-3" style="border-left: 3px solid #10B981;">
-                        <div class="text-sm text-gray-400 mb-1">Response Received - ${timestamp}</div>
-                        <div>${reply}</div>
-                    </div>
-                `;
-
-                addToSessionMemory('You → ChatGPT', userInput, timestamp);
-                addToSessionMemory('ChatGPT 4.1 Turbo', reply, timestamp);
-                updateStats();
-                sessionData.lastPrompts.chatgpt = userInput;
-
-            } catch (error) {
-                console.error('ChatGPT integration error:', error);
-                thinkingIndicator.classList.remove('active');
-
-                document.getElementById('agent-chatgpt-content').innerHTML = `
+        // 🔧 CLEAR ALL AGENTS
+        function clearAllAgents() {
+            ['A', 'B', 'C'].forEach(agent => {
+                const config = agentConfigs[sessionData.agents[agent].model];
+                document.getElementById(`agent${agent}-content`).innerHTML = `
                     <div class="message-bubble p-3">
-                        <div class="text-sm text-gray-400 mb-1">Connection Error</div>
-                        <div>Unable to connect to ChatGPT 4.1: ${error.message}</div>
+                        <div class="text-sm text-gray-400 mb-1">Ready</div>
+                        <div>${config.name} is ready for ${config.role.toLowerCase()} collaboration.</div>
                     </div>
                 `;
-            } finally {
-                button.innerHTML = originalText;
-                button.disabled = false;
-            }
+            });
+            document.getElementById('masterPrompt').value = '';
+            console.log('🧹 All agents cleared');
         }
 
-        async function sendToLlama() {
-            const userInput = document.getElementById('masterPrompt').value.trim();
-            if (!userInput) {
-                alert('Please enter a message first!');
-                return;
-            }
-
-            const button = document.getElementById('sendToLlamaBtn');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-            button.disabled = true;
-
-            const thinkingIndicator = document.getElementById('llama-thinking');
-            thinkingIndicator.classList.add('active');
-
-            try {
-                const response = await fetch('/.netlify/functions/llama', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: userInput
-                    })
-                });
-
-                const data = await response.json();
-                console.log('Llama 3.3 70B Response:', data);
-
-                const reply = (data?.content && Array.isArray(data.content) && data.content[0]?.text) 
-                    ? data.content[0].text 
-                    : 'Response received but format unexpected';
-
-                const timestamp = new Date().toLocaleTimeString();
-                thinkingIndicator.classList.remove('active');
-
-                document.getElementById('agent-llama-content').innerHTML = `
-                    <div class="message-bubble p-3" style="border-left: 3px solid var(--llama-purple);">
-                        <div class="text-sm text-gray-400 mb-1">Meta Analysis Complete - ${timestamp}</div>
-                        <div>${reply}</div>
-                    </div>
-                `;
-
-                addToSessionMemory('You → Llama', userInput, timestamp);
-                addToSessionMemory('Llama 3.3 70B', reply, timestamp);
-                updateStats();
-                sessionData.lastPrompts.llama = userInput;
-
-            } catch (error) {
-                console.error('Llama integration error:', error);
-                thinkingIndicator.classList.remove('active');
-
-                document.getElementById('agent-llama-content').innerHTML = `
-                    <div class="message-bubble p-3">
-                        <div class="text-sm text-gray-400 mb-1">Connection Error</div>
-                        <div>Unable to connect to Llama 3.3 70B: ${error.message}</div>
-                    </div>
-                `;
-            } finally {
-                button.innerHTML = originalText;
-                button.disabled = false;
-            }
+        // 💬 HUMAN CONTROLLER FUNCTIONS
+        function sendToAgentFromController(agent) {
+            const input = document.getElementById('humanInput').value.trim();
+            if (!input) return;
+            
+            document.getElementById('masterPrompt').value = input;
+            sendToAgent(agent);
+            document.getElementById('humanInput').value = '';
         }
 
-        async function sendToAll() {
-            const userInput = document.getElementById('masterPrompt').value.trim();
-            if (!userInput) {
-                alert('Please enter a message first!');
-                return;
-            }
-            Promise.all([sendToClaude(), sendToChatGPT(), sendToLlama()]);
+        function sendToAllFromController() {
+            const input = document.getElementById('humanInput').value.trim();
+            if (!input) return;
+            
+            document.getElementById('masterPrompt').value = input;
+            sendToAllAgents();
+            document.getElementById('humanInput').value = '';
         }
 
+        // 🛠️ UTILITY FUNCTIONS
         function rateResponse(agent, rating) {
-            console.log(`Rated ${agent} response: ${rating}`);
+            const config = agentConfigs[sessionData.agents[agent].model];
             const message = rating === 'up' ? 'Response rated positively' : 'Response rated negatively';
-            addToSessionMemory('System', `${agent} ${message}`, new Date().toLocaleTimeString());
+            addToSessionMemory('System', `${config.name} ${message}`, new Date().toLocaleTimeString());
         }
 
         function regenerateResponse(agent) {
-            console.log(`Regenerating ${agent} response`);
             if (sessionData.lastPrompts[agent]) {
-                switch(agent) {
-                    case 'claude': sendToClaude(); break;
-                    case 'chatgpt': sendToChatGPT(); break;
-                    case 'llama': sendToLlama(); break;
-                }
+                sendToAgent(agent);
             }
         }
 
         function copyResponse(agent) {
-            const content = document.getElementById(`agent-${agent}-content`).innerText;
+            const content = document.getElementById(`agent${agent}-content`).innerText;
             navigator.clipboard.writeText(content);
-            console.log(`Copied ${agent} response to clipboard`);
+            console.log(`Copied Agent ${agent} response to clipboard`);
         }
 
         function editAndRerun(agent) {
@@ -949,28 +976,30 @@
         }
 
         function clearAgentOutput(agent) {
-            document.getElementById(`agent-${agent}-content`).innerHTML = `
+            const config = agentConfigs[sessionData.agents[agent].model];
+            document.getElementById(`agent${agent}-content`).innerHTML = `
                 <div class="message-bubble p-3">
                     <div class="text-sm text-gray-400 mb-1">Ready</div>
-                    <div>${agent.charAt(0).toUpperCase() + agent.slice(1)} is ready for new tasks.</div>
+                    <div>${config.name} is ready for new tasks.</div>
                 </div>
             `;
         }
 
-        function toggleView(agent) {
-            console.log(`Toggling view for ${agent}`);
-        }
-
         function exportResponse(agent) {
-            const content = document.getElementById(`agent-${agent}-content`).innerHTML;
+            const content = document.getElementById(`agent${agent}-content`).innerHTML;
             const blob = new Blob([content], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${agent}_response_${Date.now()}.html`;
+            a.download = `agent${agent}_response_${Date.now()}.html`;
             a.click();
         }
 
+        function replaceResponse(agent) {
+            console.log(`Replace response for Agent ${agent}`);
+        }
+
+        // 📊 SESSION MANAGEMENT
         function addToSessionMemory(speaker, message, timestamp) {
             const memory = document.getElementById('sessionMemory');
             const bubble = document.createElement('div');
@@ -998,28 +1027,7 @@
             document.getElementById('humanInputs').textContent = Math.floor(totalMessages / 2);
         }
 
-        function sendToAgent(agent) {
-            const input = document.getElementById('humanInput').value.trim();
-            if (!input) return;
-            
-            document.getElementById('masterPrompt').value = input;
-            switch(agent) {
-                case 'claude': sendToClaude(); break;
-                case 'chatgpt': sendToChatGPT(); break;
-                case 'llama': sendToLlama(); break;
-            }
-            document.getElementById('humanInput').value = '';
-        }
-
-        function sendToAllAgents() {
-            const input = document.getElementById('humanInput').value.trim();
-            if (!input) return;
-            
-            document.getElementById('masterPrompt').value = input;
-            sendToAll();
-            document.getElementById('humanInput').value = '';
-        }
-
+        // 🎮 RELAY CONTROLS
         function startRelay() {
             sessionData.relayActive = true;
             console.log('Multi-agent relay started');
@@ -1039,6 +1047,7 @@
             console.log('Voice interaction toggled');
         }
 
+        // 📄 EXPORT FUNCTIONS
         function exportSession(format) {
             const sessionContent = document.getElementById('sessionMemory').innerHTML;
             let content, mimeType, extension;
@@ -1067,15 +1076,16 @@
             a.click();
         }
 
-        document.getElementById('sendToAllBtn').addEventListener('click', sendToAll);
-        document.getElementById('sendToClaudeBtn').addEventListener('click', sendToClaude);
-        document.getElementById('sendToChatGPTBtn').addEventListener('click', sendToChatGPT);
-        document.getElementById('sendToLlamaBtn').addEventListener('click', sendToLlama);
+        // 🎯 EVENT LISTENERS
+        document.getElementById('sendToAllBtn').addEventListener('click', sendToAllAgents);
+        document.getElementById('sendToAgentABtn').addEventListener('click', () => sendToAgent('A'));
+        document.getElementById('sendToAgentBBtn').addEventListener('click', () => sendToAgent('B'));
+        document.getElementById('sendToAgentCBtn').addEventListener('click', () => sendToAgent('C'));
 
         document.getElementById('masterPrompt').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendToAll();
+                sendToAllAgents();
             }
         });
 
@@ -1088,21 +1098,25 @@
             });
         });
 
+        // ⏰ REAL-TIME UPDATES
         setInterval(() => {
             const sessionTimeMs = Date.now() - sessionData.startTime;
             const sessionTimeSec = Math.floor(sessionTimeMs / 1000);
             document.getElementById('sessionTime').textContent = sessionTimeSec + 's';
         }, 1000);
 
-        console.log('🚀 ThePromptLink v7.0 Professional Platform Initialized');
-        console.log('🤖 3-Agent Architecture: Claude Sonnet 4.0 + ChatGPT 4.1 + Llama 3.3 70B');
-        console.log('💚 Ready for revolutionary AI collaboration!');
+        // 🚀 INITIALIZE PLATFORM
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all agents with their default selections
+            updateAgent('A');
+            updateAgent('B'); 
+            updateAgent('C');
+            
+            console.log('🚀 ThePromptLink v8.0 Revolutionary Platform Initialized');
+            console.log('🎭 5-Model Architecture: Claude + ChatGPT + Llama + Mistral + Gemini');
+            console.log('⚡ 125 Possible Combinations Ready!');
+            console.log('🌟 Welcome to the Future of AI Orchestration!');
+        });
     </script>
 </body>
 </html>
-            
-
-
-            
-
-
