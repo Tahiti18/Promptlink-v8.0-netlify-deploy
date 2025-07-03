@@ -343,12 +343,12 @@
 
         <!-- Agent Panels -->
         <div class="grid-container">
-            <!-- Agent A - Dynamic Model Selector -->
+            <!-- A  Dynamic Model Selector -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i class="fas fa-robot mr-2" id="agentA-icon" style="color: var(--fluorescent-green);"></i>
-                        Agent A - 
+                        A 
                         <select id="agentA-selector" class="model-selector" onchange="updateAgent('A')">
                             <option value="claude">Claude 3.5 Sonnet - Creative Strategist</option>
                             <option value="chatgpt">ChatGPT 4 Turbo - Versatile Analyzer</option>
@@ -357,7 +357,7 @@
                             <option value="gemini">Gemini 2.0 Flash - Google Speed Demon</option>
                         </select>
                     </h3>
-                    <div class="agent-status" id="agentA-status">Creative Strategist Ready</div>
+                    <div class="hidden" id="agentA-status"></div>
                 </div>
 
                 <!-- Enhanced Toolbar -->
@@ -412,12 +412,12 @@
                 </div>
             </div>
 
-            <!-- Agent B - Dynamic Model Selector -->
+            <!-- B  Dynamic Model Selector -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i class="fas fa-comments mr-2" id="agentB-icon" style="color: #10B981;"></i>
-                        Agent B - 
+                        B 
                         <select id="agentB-selector" class="model-selector" onchange="updateAgent('B')">
                             <option value="chatgpt">ChatGPT 4 Turbo - Versatile Analyzer</option>
                             <option value="claude">Claude 3.5 Sonnet - Creative Strategist</option>
@@ -426,7 +426,7 @@
                             <option value="gemini">Gemini 2.0 Flash - Google Speed Demon</option>
                         </select>
                     </h3>
-                    <div class="agent-status" id="agentB-status">Versatile Analyzer Ready</div>
+                    <div class="hidden" id="agentB-status"></div>
                 </div>
 
                 <!-- Enhanced Toolbar -->
@@ -481,12 +481,12 @@
                 </div>
             </div>
 
-            <!-- Agent C - Dynamic Model Selector -->
+            <!-- C  Dynamic Model Selector -->
             <div class="glass-panel p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i class="fas fa-brain mr-2" id="agentC-icon" style="color: var(--llama-purple);"></i>
-                        Agent C - 
+                        C 
                         <select id="agentC-selector" class="model-selector" onchange="updateAgent('C')">
                             <option value="llama">Llama 3.3 - Meta Powerhouse</option>
                             <option value="claude">Claude 3.5 Sonnet - Creative Strategist</option>
@@ -495,7 +495,7 @@
                             <option value="gemini">Gemini 2.0 Flash - Google Speed Demon</option>
                         </select>
                     </h3>
-                    <div class="agent-status" id="agentC-status">Meta Powerhouse Ready</div>
+                    <div class="hidden" id="agentC-status"></div>
                 </div>
 
                 <!-- Enhanced Toolbar -->
